@@ -1,0 +1,311 @@
+I updated only the conversation logic (JavaScript) to make OMI detect intent, reply in natural Indian Hinglish, be funny/frank/savage-but-helpful, avoid generic fallbacks, and vary responses so it doesn't repeat. I preserved a minimal, typical chat UI structure — if you already have an index.html, you can replace only the <script> block with this new script. Below is the complete corrected index.html file.
+
+```html name=index.html
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OMI Chat</title>
+  <style>
+    /* Minimal, neutral styling — keep UI/visuals unchanged when integrating:
+       If you have an existing UI, replace only the <script> below.
+       This CSS is intentionally basic so it won't conflict with your current visuals. */
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; height:100vh; display:flex; align-items:center; justify-content:center; background:#f5f6fb; }
+    .chat-wrap { width:420px; max-width:96%; height:640px; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(20,20,50,0.08); display:flex; flex-direction:column; overflow:hidden; }
+    .chat-header { padding:16px 18px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:12px; }
+    .avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#7b61ff,#ff6b6b); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+    .title { font-weight:700; }
+    .messages { flex:1; padding:16px; overflow:auto; display:flex; flex-direction:column; gap:12px; background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.9)); }
+    .msg { max-width:78%; padding:10px 12px; border-radius:12px; line-height:1.35; }
+    .msg.user { align-self:flex-end; background:#0b93f6; color:#fff; border-bottom-right-radius:6px; }
+    .msg.omi { align-self:flex-start; background:#f1f3f8; color:#111; border-bottom-left-radius:6px; }
+    .input-row { display:flex; gap:8px; padding:12px; border-top:1px solid #eee; }
+    .input { flex:1; padding:10px 12px; border-radius:10px; border:1px solid #ddd; outline:none; font-size:14px; }
+    .btn { padding:10px 14px; border-radius:10px; background:#111827; color:#fff; border:none; cursor:pointer; font-weight:600; }
+    .hint { font-size:12px; color:#666; margin-left:12px; }
+    .small { font-size:12px; color:#666; }
+  </style>
+</head>
+<body>
+  <div class="chat-wrap" role="application" aria-label="OMI Chat">
+    <div class="chat-header">
+      <div class="avatar">OM</div>
+      <div>
+        <div class="title">OMI</div>
+        <div class="small">Savage + Helpful</div>
+      </div>
+      <div style="margin-left:auto" class="hint">Hinglish • Friendly • Context-aware</div>
+    </div>
+
+    <div id="messages" class="messages" aria-live="polite"></div>
+
+    <div class="input-row">
+      <input id="input" class="input" placeholder="Type a message... (e.g., 'kya haal hai', 'roast me', 'mujhe help chahiye')" />
+      <button id="send" class="btn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    /****************************************************************
+     * OMI Conversation Logic
+     * - Intent detection in Hinglish/Hindi and English
+     * - Context-aware replies (uses lastUserMessage/context)
+     * - Varied templates, avoids repeating same response
+     * - Savage level adjustable via savageLevel (0-10)
+     *
+     * IMPORTANT: If integrating into existing UI, replace only this <script>.
+     ****************************************************************/
+
+    (function () {
+      const savageLevel = 7; // 0 = nice, 10 = max savage (still safe)
+      const messagesEl = document.getElementById('messages');
+      const inputEl = document.getElementById('input');
+      const sendBtn = document.getElementById('send');
+
+      // Keep simple chat history
+      const chatHistory = []; // {role: 'user'|'omi', text}
+      const lastRepliesByIntent = {}; // to avoid exact repeats
+
+      // Utility: add message element
+      function addMessage(role, text) {
+        chatHistory.push({ role, text });
+        const div = document.createElement('div');
+        div.className = 'msg ' + (role === 'user' ? 'user' : 'omi');
+        div.textContent = text;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      // Initial welcome if empty
+      function initialWelcome() {
+        const text = "Yo! Main OMI hoon — savage lekin madadgar. Kya haal hai? (type 'roast me', 'mujhe help chahiye', ya bas bolo) 😎";
+        addMessage('omi', text);
+      }
+
+      // Very small safety check for illegal/unethical requests
+      function isIllegalOrDangerous(text) {
+        const danger = ['hack', 'hacking', 'cheat exam', 'cheat', 'steal', 'bomb', 'weapon', 'ddos', 'illegal', 'drugs', 'sell drugs', 'cheatsheet for exam answers'];
+        const t = text.toLowerCase();
+        return danger.some(d => t.includes(d));
+      }
+
+      // Intent detection (keyword + regex) — returns {intent, confidence, meta}
+      function detectIntent(text) {
+        const t = text.toLowerCase().trim();
+
+        // greetings
+        const greetings = /^(hi|hey|hello|hola|namaste|salaam|hi omi|hey omi|hello omi)$/i;
+        if (greetings.test(t)) return { intent: 'greeting', confidence: 0.95 };
+
+        // how-are-you
+        if (/\b(kya haal|kaise ho|kya chal|kya chal raha|kya chal raha hai|kya haal hai)\b/i.test(t)) return { intent: 'how_are_you', confidence: 0.98 };
+
+        // bored
+        if (/\b(bore|bored|bores| kuch karu|kuch karna hai|bore ho raha)\b/i.test(t)) return { intent: 'bored', confidence: 0.95 };
+
+        // what doing
+        if (/\b(kya kar rahe ho|kya kar raha|kya kar rahi ho|kya kar rhe ho|kya kar rahe ho omi)\b/i.test(t)) return { intent: 'what_are_you_doing', confidence: 0.95 };
+
+        // thanks
+        if (/\b(thanks|thank you|dhanyavaad|shukriya|shukran|thanx)\b/i.test(t)) return { intent: 'thanks', confidence: 0.98 };
+
+        // help
+        if (/\b(mujhe help|help chahiye|madad chahiye|help me|can you help)\b/i.test(t)) return { intent: 'need_help', confidence: 0.98 };
+
+        // roast me
+        if (/\b(roast me|roast|tukra|mazaak maar)\b/i.test(t)) return { intent: 'roast_me', confidence: 0.99 };
+
+        // short casual hello like 'kya' or 'wassup'
+        if (/\b(wassup|sup|kya|kya re|kya bhai|bhai kya)\b/i.test(t) && t.length < 30) return { intent: 'small_talk', confidence: 0.9 };
+
+        // if question mark or starts with 'how', 'what', 'why', 'kaha', 'kaise' treat as question
+        if (t.includes('?') || /^(how|what|why|where|kaise|kahan|kyun|kya)\b/.test(t)) return { intent: 'question', confidence: 0.8 };
+
+        // detect topic keywords for help context
+        const topics = {};
+        if (/\b(code|bug|error|stack trace|javascript|python|node|react|html|css)\b/i.test(t)) topics.topic = 'code';
+        if (/\b(homework|assignment|study|padhai|exam|test)\b/i.test(t)) topics.topic = 'study';
+        if (/\b(party|event|plan|birthday)\b/i.test(t)) topics.topic = 'event';
+        if (/\b(date|relationship|pyaar|romance|crush)\b/i.test(t)) topics.topic = 'date';
+
+        // fallback: conversational / unknown
+        return { intent: 'unknown', confidence: 0.5, meta: topics };
+      }
+
+      // Avoid repeating the exact same reply for the same intent
+      function pickTemplate(intent, templates) {
+        const last = lastRepliesByIntent[intent];
+        const options = templates.filter(t => t !== last);
+        const pick = options.length ? options[Math.floor(Math.random() * options.length)] : templates[Math.floor(Math.random() * templates.length)];
+        lastRepliesByIntent[intent] = pick;
+        return pick;
+      }
+
+      // Generators for each intent — produce a reply string
+      function generateReply(userText, intentResult) {
+        const t = userText.trim();
+        if (isIllegalOrDangerous(t)) {
+          const safeMsgs = [
+            "Nahi bhai, yeh illegal hai — main madad nahi karunga. Par agar legal alternative chahiye toh bata, main usme madad kar dunga.",
+            "Usme help nahi kar sakta — illegal cheezon se door raho. Chalo koi legit solution dhoondte hain."
+          ];
+          return pickTemplate('illegal', safeMsgs);
+        }
+
+        const intent = intentResult.intent;
+        const topic = (intentResult.meta && intentResult.meta.topic) || '';
+
+        if (intent === 'greeting') {
+          const templates = [
+            "Heyy! Main theek hoon — tu bata, kya scene hai? 😎",
+            "Hola! OMI yahan — bata pehle chutki mein kaunsi problem suljhaun?",
+            "Hi bro! Koi drama hai ya bas chill kar raha hai? Bol seedha."
+          ];
+          return pickTemplate('greeting', templates);
+        }
+
+        if (intent === 'how_are_you') {
+          const templates = [
+            `Main mast hoon bhai 😎 Tu bata, tera kya haal hai? Zinda hai ya sirf phone ki battery sambhal raha hai? 😂`,
+            `Theek hoon — duniya ka drama dekh raha hoon. Tu bata: padhai, plan, ya code ka issue?`,
+            `Zinda hoon, bas teri lazy energy ko dekhta hoon — bolo, kaunsi problem suljhaun?`
+          ];
+          // follow-up offer for help
+          return pickTemplate('how_are_you', templates) + " (agar chahiye toh 'mujhe help chahiye' bol ya issue bata).";
+        }
+
+        if (intent === 'bored') {
+          const activities = [
+            "Dekho: 1) 5-min ka quick game (rock-paper-scissors), 2) 25-min Pomodoro + challenge, 3) ek roast-off karte hain. Kaunsa chahiye?",
+            "Bore? Chal 3 options: meme flood, quick coding puzzle, ya savage roast session — bol kaunsa.",
+            "Boredness ka cure: (1) Short playlist, (2) 5 creative prompts, (3) I roast you for 2 min — pick one."
+          ];
+          const roast = savageReplyShort();
+          return pickTemplate('bored', activities) + "\n" + roast;
+        }
+
+        if (intent === 'what_are_you_doing') {
+          const templates = [
+            "Bas tumhara reply ka intezaar kar raha tha — tu bol kya karna hai? Kaam, plan, ya nadaan sawaal?",
+            "Main? Teri musibat ka solution dhoond raha hoon. Bata problem — seedha fix dunga.",
+            "Chill kar raha tha; ab tera message mila toh kaam shuru — kya chahiye?"
+          ];
+          return pickTemplate('what_are_you_doing', templates);
+        }
+
+        if (intent === 'thanks') {
+          const templates = [
+            "Koi baat nahi yaar — hum dost hain, kaam chala do! ✌️",
+            "No problem! Aur chahiye ho toh seedha bol dena.",
+            "Shukriya accept kar liya — ab kuch aur karu tere liye?"
+          ];
+          return pickTemplate('thanks', templates);
+        }
+
+        if (intent === 'need_help') {
+          // If user provided topic in same message, try to prefill
+          let suggested = "Bata kis cheez mein help chahiye: code, padhai, party planning, ya relationship? Agar code toh file/stack trace paste kar.";
+          if (/\b(code|bug|error|javascript|python|react|node)\b/i.test(t)) suggested = "Acha code problem hai — paste error/stack trace aur file name. Main pehle 2-line cause + 1 fix bataunga.";
+          if (/\b(homework|assignment|padhai|exam|test)\b/i.test(t)) suggested = "Study help chahiye? Topic bata aur kitna time hai — main 25-min plan + 3 practice questions bana dunga.";
+          if (/\b(party|event|plan|birthday)\b/i.test(t)) suggested = "Party plan karna hai? Budget aur guest list bata, main 3 menu + shopping list deta hoon.";
+          return "Theek — " + suggested;
+        }
+
+        if (intent === 'roast_me') {
+          return roastMe(t);
+        }
+
+        if (intent === 'small_talk') {
+          const templates = [
+            "Kya bolta re? Thoda detail de varna main meme bhej dunga.",
+            "Kya scene hai? Short batao — main seedha maat chala dunga.",
+            "Bol yaar, seedha bata problem ya bas chill karna hai?"
+          ];
+          return pickTemplate('small_talk', templates);
+        }
+
+        if (intent === 'question') {
+          // Try to handle common questions like 'how to', 'kya hai', 'kaise' simple heuristics
+          if (/how to|kaise|kaun|kya hai|what is|kahan/i.test(t)) {
+            // Quick helpful answer stub + actionable next steps
+            return smartAnswerStub(t);
+          }
+          return "Achha sawaal — thoda specific bata (example, 'kaise solve karun X' ya 'kya best hai for Y'), main seedha step-by-step dunga.";
+        }
+
+        // unknown intent — be contextual using keywords from message
+        const meta = intentResult.meta || {};
+        if (meta.topic === 'code') {
+          return "Lagta hai code ka issue hai — error/stack trace aur file name paste kar; main 2-line cause + 1 fix dunga.";
+        }
+        if (meta.topic === 'study') {
+          return "Study ki help chahiye? Topic aur available time bata, main 25-min plan + 3 practice questions bana dunga.";
+        }
+        if (meta.topic === 'event') {
+          return "Event plan chahiye? Budget/guest count bata — menu aur shopping list bana dunga.";
+        }
+
+        // Fallback contextual reply (not generic)
+        // Try to rephrase and ask clarifying question
+        const short = t.length > 120 ? t.slice(0, 120) + '...' : t;
+        return `Samajhne ki koshish kar raha hoon: "${short}" — thoda specific batao (ek line mein): kya chahiye?`;
+      }
+
+      // A short savage line generator for bored replies and others
+      function savageReplyShort() {
+        const mild = [
+          "Chill maar, warna main zyada savage ho jaunga 😉",
+          "Tu lazy toh main aggressive ho jaunga — bata kya chahiye.",
+          "Bas bol, time waste mat kar — solution turant dunga."
+        ];
+        const spicy = [
+          "Teri excuse library bahut badi hai — ek valid reason do varna meme bhej dunga.",
+          "Tu drama karega toh main popcorn mangwa dunga. Seedha bolo.",
+          "Agar 'kuch nahi' bolega toh main tujhe bore se hi roast kar dunga."
+        ];
+        return (savageLevel >= 7 ? pickTemplate('savage_spicy', spicy) : pickTemplate('savage_mild', mild));
+      }
+
+      // Harmless roast generator
+      function roastMe(userText) {
+        // Keep roasts playful and avoid personal/identity attacks
+        const roasts = [
+          "Tu itna late reply karta hai ki main samajhta hoon tere phone mein timezone change ho gaya hai.",
+          "Teri energy se lagta hai tumne 'motivation' ko unsubscribe kar diya hai.",
+          "Tune socha tha life hack hoga, mil gaya life nap.",
+          "Teri baatein sunke phone bhi 'Do Not Disturb' pe chala jata hai — chill maar."
+        ];
+        const friendly = [
+          "Chal theek hai — ek gentle roast: Tu bahut charming ho... jab camera off ho.",
+          "Tu itna cool hai ki fridge bhi tujhe jealous dekh raha hai."
+        ];
+        const pick = savageLevel >= 7 ? pickTemplate('roast_spicy', roasts) : pickTemplate('roast_friendly', friendly);
+        return pick + " 😂 Agar aur chahiye toh bol 'more roast' ya topic de.";
+      }
+
+      // Smart stub for common questions — gives a concise helpful answer + 3 steps
+      function smartAnswerStub(q) {
+        // Very simple heuristics for 'how to code', 'how to study', etc.
+        const t = q.toLowerCase();
+        if (t.includes('how to code') || t.includes('kaise code') || t.includes('javascript') || t.includes('python') || t.includes('react') || t.includes('node')) {
+          return "Code karna hai? Start simple:\n1) Problem ko short mein likh (1-2 lines).\n2) Pseudo-code banao — steps likh do.\n3) Ek basic example likho aur run karo. Paste code agar error aaye, main debug karke 1 fix bata dunga.";
+        }
+        if (t.includes('how to study') || t.includes('padhai') || t.includes('exam') || t.includes('study')) {
+          return "Study plan chahiye? Try:\n1) Topic list banao (max 5).\n2) 25-min pomodoro + 5-min break cycles.\n3) 3 practice questions + 1 quick revision. Bata kitna time hai, main plan bana doon.";
+        }
+        if (t.includes('what is') || t.includes('kya hai')) {
+          return "Ye complex nahi hona chahiye — bata kaunsa topic hai (ek word ya short phrase) aur main 2-line explanation + 1 example dunga.";
+        }
+        return "Sawaal mast hai. Thoda specific batao (topic/tech/time), main short solution + 3 steps dunga.";
+      }
+
+      // Simple function to process user input and produce OMI reply
+      function processUserMessage(text) {
+        addMessage('user', text);
+        const intentResult = detectIntent(text);
+        const reply = generateReply(text, intentResult);
+        // simulate small typing delay for realism
+        setTimeout(() => addMessage('omi', reply), 350 + Math.random() * 600);
+      }
+
