@@ -231,3 +231,18 @@ OMI's personality:
 Keep the current chat UI EXACTLY unchanged.
 Only modify the JavaScript conversation logic and response generation.
 Return the complete corrected index.html file.
+/* Basic chat UI (structure only) */
+body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#f5f7fb; margin:0; padding:24px; }
+.chat-shell { max-width:720px; margin:0 auto; background:#ffffff; border-radius:12px; box-shadow:0 8px 30px rgba(15,23,42,0.08); overflow:hidden; display:flex; flex-direction:column; min-height:70vh; }
+.chat-header { padding:16px 20px; border-bottom:1px solid rgba(15,23,42,0.05); font-weight:600; font-size:16px; }
+.messages { padding:16px; flex:1; overflow:auto; display:flex; flex-direction:column; gap:12px; background:linear-gradient(180deg,#fff, #fbfdff 60%); }
+.message { max-width:78%; padding:10px 14px; border-radius:12px; line-height:1.35; }
+.user { margin-left:auto; background:#e6f7ff; color:#003a6b; border-bottom-right-radius:4px; }
+.omi { margin-right:auto; background:#f1f5f9; color:#0f172a; border-bottom-left-radius:4px; }
+.meta { font-size:12px; opacity:0.6; margin-top:6px; text-align:right; }
+
+.composer { display:flex; gap:8px; padding:12px; border-top:1px solid rgba(15,23,42,0.05); }
+.composer input[type="text"]{ flex:1; padding:12px 14px; border-radius:10px; border:1px solid rgba(15,23,42,0.08); font-size:15px; }
+.composer button{ padding:10px 14px; border-radius:10px; background:#0ea5a4; color:#fff; border:none; cursor:pointer; font-weight:600; }
+.small { font-size:13px; color:#667085; padding:8px 12px; }
+/* End of structural styles */
