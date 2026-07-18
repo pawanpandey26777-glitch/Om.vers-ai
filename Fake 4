@@ -1,7 +1,6 @@
 I updated only the conversation logic (JavaScript) to make OMI detect intent, reply in natural Indian Hinglish, be funny/frank/savage-but-helpful, avoid generic fallbacks, and vary responses so it doesn't repeat. I preserved a minimal, typical chat UI structure — if you already have an index.html, you can replace only the <script> block with this new script. Below is the complete corrected index.html file.
 
-```html name=index.html
-<!doctype html>
+```html name=ind<!doctype html>
 <html lang="hi">
 <head>
   <meta charset="utf-8" />
