@@ -861,7 +861,7 @@
             <div class="modal-content">
                 <div class="settings-group">
                     <label class="settings-label">Kya maddad chahiye?</label>
-                    <input type="text" id="helpQuery" placeholder="Apna sawal likho..." style="width: 100%; padding: 10px; border: 2px solid var(--medium-gray); border-radius: 8px; font-size: 14px;" />
+                    <input type="text" id="helpQuery" placeholder="Apna sawal likho..." style="width: 100%; padding: 10px; border: 2px solid var(--medium-gray); border-radius: 8px; font-size: 14px; font-family: inherit;" />
                 </div>
                 <div id="helpResponse" style="background: var(--light-gray); padding: 12px; border-radius: 8px; font-size: 13px; color: var(--text-light); line-height: 1.5; display: none;"></div>
             </div>
@@ -933,7 +933,7 @@
                     <div>
                         <div class="message-bubble">${escapeHtml(msg.text)}</div>
                         <div class="message-time">${msg.time}</div>
-                        ${msg.type === 'omi' ? `<button class="speak-btn" onclick="speakMessage('${escapeHtml(msg.text).replace(/'/g, "\\'")}')">🔊</button>` : ''}
+                        ${msg.type === 'omi' ? `<button class="speak-btn" onclick="speakMessage('${escapeHtml(msg.text).replace(/'/g, "\\'")}')" title="Speak message">🔊</button>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -1003,229 +1003,155 @@
             window.speechSynthesis.speak(utterance);
         };
 
-        // ============ CHAT LOGIC ============
-        const omiResponses = {
-            roast: [
-                "Bhai tera code itna complicated hai ki ChatGPT bhi depression mein aa gaya 😂",
-                "Tere baare mein ek baat kahun? Tu itna 'busy' hai ki sirf apne aap se baat karta hai 💀",
-                "Teri coding style dekh ke JavaScript ke inventor ne suicide note likha 😅",
-                "Bhai, tere logic se zyada twisted woh pretzel hota hai jo bakery mein bikta hai 🥨",
-                "Tu itna lazy hai ki async-await ko bhi inspiration milta hai tere se 💤"
-            ],
-            normal: [
-                "Arre, kya haal chaal? Sab theek-thaak? 😊",
-                "Haan bhai, main hoon. Bol, kya chahiye? 🎯",
-                "Yo! Kya chal raha hai? Bata na, bore ho raha hoon na 😂",
-                "Arre, tu aa gaya! Accha tha na mera roast? 🔥",
-                "Bhai, main to shukar mana raha hoon na... tum kaam karte ho ya sirf main se baat karte ho? 😅"
-            ],
-            help: [
-                "Arey, problem kya hai bhai? Bata, main samjha dunga 🧠",
-                "Haan beta, pucha toh sahi! Aaja, dono milon-milakar solve kar denge 💪",
-                "Smart help? More like dumb question, par koi bat nahi! Bol na 😂"
-            ],
-            game: [
-                "Chalega! Lekin careful, main toh bohut hard questions puchunga 🎮",
-                "Game mode ON! Dekhte hain tere zyada marks aate hain ya main jita dunga 🏆"
-            ]
+        // ============ FALLBACK RESPONSES ============
+        const fallbackResponses = [
+            "Arrey, tu toh bohot badhiya question poocha! 😎",
+            "Haan bhai, sahi kaha tune! 🔥",
+            "Tumhara bol toh bilkul suno! Aage kya bologe? 🧠",
+            "Lol, interesting! Aur batao na! 😂",
+            "Haha! Tumlat ka sense of humor achha hai! 😆",
+            "Sahi kaha! Tum philosophical nikle! 🤔",
+            "Tum serious nikle! I like it! 💪",
+            "Chalo, chalo! Aage badhte hain! 🚀",
+            "Kya baat hai! Tumhe toh sab pata hai! 😜",
+            "Bilkul! Mujhe tumhare saath baat karna pasand aa gya! ✨",
+        ];
+
+        const getRandomFallback = () => {
+            return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
         };
 
-        const getOmiResponse = (userMessage) => {
-            const lower = userMessage.toLowerCase();
-            
-            if (lower.includes('roast') || lower.includes('mujhe') || lower.includes('teri baat')) {
-                return omiResponses.roast[Math.floor(Math.random() * omiResponses.roast.length)];
-            }
-            if (lower.includes('help') || lower.includes('sikhao') || lower.includes('samjha')) {
-                return omiResponses.help[Math.floor(Math.random() * omiResponses.help.length)];
-            }
-            if (lower.includes('game') || lower.includes('trivia')) {
-                return omiResponses.game[Math.floor(Math.random() * omiResponses.game.length)];
-            }
-            return omiResponses.normal[Math.floor(Math.random() * omiResponses.normal.length)];
-        };
-
+        // ============ MESSAGE SENDING ============
         const sendMessage = async () => {
             const input = document.getElementById('messageInput');
-            const text = input.value.trim();
+            const message = input.value.trim();
 
-            if (!text) return;
+            if (!message) return;
 
-            addMessage(text, 'user');
+            // Add user message immediately
+            addMessage(message, 'user');
             input.value = '';
 
+            // Show typing indicator
             showTyping();
 
-            // Simulate response delay
+            // Simulate delay and generate fallback response
             setTimeout(() => {
                 removeTyping();
-                const response = getOmiResponse(text);
-                addMessage(response, 'omi');
+                const omiReply = getRandomFallback();
+                addMessage(omiReply, 'omi');
 
+                // Auto-speak if sound is enabled
                 if (soundEnabled) {
-                    speakMessage(response);
+                    speakMessage(omiReply);
                 }
-            }, 1200 + Math.random() * 800);
+            }, 1000);
         };
 
-        // ============ FEATURES ============
-        const roasts = [
-            "Bhai tera dimaag itna slow hai ki 56k modem bhi complain kar de 😂",
-            "Tu itna confusing hai na, semicolon aur full stop bhi tere samne lost ho jate hain 💀",
-            "Teri problem-solving skills dekh ke AI bhi shutdown ho gaya 🔌",
-            "Bhai, tere ideas itne raw hain na ki Ramsay Gordon bhi apne kitchen se nikaal de 🔪",
-            "Tu itna indecisive hai na ki null pointer khaud mein error experience karta hai 🤖",
-            "Teri logic dekh ke boolean types bhi confused ho gaye - true ho ya false? 🤔",
-            "Bhai, tere jokes itne slow load hote hain na ki buffering indicator bhi timer lagaa de 💀",
-            "Tu itna dramatic hai na, Exception handling mein inspired karte hain tujhse 🎭"
-        ];
+        // ============ EVENT LISTENERS ============
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChat();
 
-        const generateRoast = () => {
-            const roast = roasts[Math.floor(Math.random() * roasts.length)];
-            document.getElementById('roastContent').textContent = roast;
-            addMessage(`Omi ne roast kiya: ${roast}`, 'omi');
-        };
-
-        // ============ TRIVIA GAME ============
-        const triviaQuestions = [
-            {
-                question: "Python mein "list" ka use kya hota hai?",
-                options: ["Ordered collection", "Only for numbers", "String ke liye", "Function ka naam"],
-                correct: 0
-            },
-            {
-                question: "Git mein "commit" ka matlab?",
-                options: ["Code upload karna", "Changes ko save karna", "Project delete karna", "Internet status"],
-                correct: 1
-            },
-            {
-                question: "HTML ka full form kya hai?",
-                options: ["Hyper Text Mark Language", "Hyper Text Markup Language", "High Tech Mark Language", "Home Text Mark Link"],
-                correct: 1
-            },
-            {
-                question: "CSS ka use kaise hota hai?",
-                options: ["Logic likhnaa", "Database bananna", "Styling aur layout", "Mobile app bananaa"],
-                correct: 2
-            },
-            {
-                question: "JavaScript mein variable declare karne ke liye kya use hote hain?",
-                options: ["var, const, let", "define, class, function", "class, object, array", "import, export, default"],
-                correct: 0
-            },
-            {
-                question: "API ka full form?",
-                options: ["Application Programming Interface", "Advanced Programming Instruction", "Array Processing Input", "Application Process Installation"],
-                correct: 0
-            },
-            {
-                question: "Database ka kya kaam hota hai?",
-                options: ["Website bananna", "Data store karna", "Styling karna", "Sound laganna"],
-                correct: 1
-            },
-            {
-                question: "React mein component kya hota hai?",
-                options: ["CSS file", "Function ya class", "Database entry", "Server side code"],
-                correct: 1
+            // Send button click
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendMessage);
             }
-        ];
 
-        const startTrivia = () => {
-            gameScore = 0;
-            currentTriviaIndex = 0;
-            document.getElementById('gameScore').textContent = '0';
+            // Enter key in input
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+
+            // Settings
+            const settingsBtn = document.getElementById('settingsBtn');
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', openSettings);
+            }
+
+            // Sound toggle
+            const soundToggle = document.getElementById('soundToggle');
+            if (soundToggle) {
+                soundToggle.addEventListener('click', toggleSound);
+            }
+
+            // TTS toggle
+            const ttsToggle = document.getElementById('ttsToggle');
+            if (ttsToggle) {
+                ttsToggle.addEventListener('click', toggleTTS);
+            }
+
+            // Feature buttons
+            const roastBtn = document.getElementById('roastBtn');
+            if (roastBtn) {
+                roastBtn.addEventListener('click', openRoast);
+            }
+
+            const gameBtn = document.getElementById('gameBtn');
+            if (gameBtn) {
+                gameBtn.addEventListener('click', openGame);
+            }
+
+            const helpBtn = document.getElementById('helpBtn');
+            if (helpBtn) {
+                helpBtn.addEventListener('click', openHelp);
+            }
+
+            const timepassBtn = document.getElementById('timepassBtn');
+            if (timepassBtn) {
+                timepassBtn.addEventListener('click', openTimepass);
+            }
+
+            // Modal overlays - close on background click
+            const settingsModal = document.getElementById('settingsModal');
+            const roastModal = document.getElementById('roastModal');
+            const gameModal = document.getElementById('gameModal');
+            const helpModal = document.getElementById('helpModal');
+            const timepassModal = document.getElementById('timepassModal');
+
+            if (settingsModal) {
+                settingsModal.addEventListener('click', (e) => {
+                    if (e.target === settingsModal) closeSettings();
+                });
+            }
+            if (roastModal) {
+                roastModal.addEventListener('click', (e) => {
+                    if (e.target === roastModal) closeRoast();
+                });
+            }
+            if (gameModal) {
+                gameModal.addEventListener('click', (e) => {
+                    if (e.target === gameModal) closeGame();
+                });
+            }
+            if (helpModal) {
+                helpModal.addEventListener('click', (e) => {
+                    if (e.target === helpModal) closeHelp();
+                });
+            }
+            if (timepassModal) {
+                timepassModal.addEventListener('click', (e) => {
+                    if (e.target === timepassModal) closeTimepass();
+                });
+            }
+
+            // Initialize game
             nextTriviaQuestion();
-        };
+        });
 
-        const nextTriviaQuestion = () => {
-            if (currentTriviaIndex >= triviaQuestions.length) {
-                currentTriviaIndex = 0;
-            }
-
-            const q = triviaQuestions[currentTriviaIndex];
-            document.getElementById('triviaQuestion').textContent = q.question;
-            
-            const optionsDiv = document.getElementById('triviaOptions');
-            optionsDiv.innerHTML = q.options.map((opt, idx) => `
-                <button class="trivia-option" onclick="selectTrivia(${idx}, ${q.correct})">
-                    ${opt}
-                </button>
-            `).join('');
-
-            currentTriviaIndex++;
-        };
-
-        const selectTrivia = (selected, correct) => {
-            const options = document.querySelectorAll('.trivia-option');
-            
-            options.forEach((opt, idx) => {
-                if (idx === correct) {
-                    opt.classList.add('correct');
-                } else if (idx === selected && selected !== correct) {
-                    opt.classList.add('incorrect');
-                }
-                opt.style.pointerEvents = 'none';
-            });
-
-            if (selected === correct) {
-                gameScore += 10;
-                document.getElementById('gameScore').textContent = gameScore;
-            }
-        };
-
-        // ============ VOICE INPUT ============
-        const startVoiceInput = () => {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('Voice input not supported in this browser');
-                return;
-            }
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            
-            recognition.language = 'hi-IN';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-
-            recognition.start();
-            document.getElementById('micBtn').style.color = 'var(--primary-red)';
-
-            recognition.onresult = (event) => {
-                let finalTranscript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    finalTranscript += event.results[i][0].transcript;
-                }
-                
-                if (finalTranscript) {
-                    document.getElementById('messageInput').value = finalTranscript;
-                }
-            };
-
-            recognition.onerror = () => {
-                console.log('Voice input error');
-            };
-
-            recognition.onend = () => {
-                document.getElementById('micBtn').style.color = 'var(--text-dark)';
-            };
-        };
-
-        // ============ MODALS ============
+        // ============ MODAL FUNCTIONS ============
         const openSettings = () => {
             document.getElementById('settingsModal').classList.add('active');
         };
 
         const closeSettings = () => {
             document.getElementById('settingsModal').classList.remove('active');
-        };
-
-        const clearChat = () => {
-            if (confirm('Chat history delete kar du? 🗑️')) {
-                chatHistory = [];
-                saveChat();
-                renderMessages();
-                closeSettings();
-            }
         };
 
         const openRoast = () => {
@@ -1239,7 +1165,10 @@
 
         const openGame = () => {
             document.getElementById('gameModal').classList.add('active');
-            startTrivia();
+            gameScore = 0;
+            document.getElementById('gameScore').textContent = '0';
+            currentTriviaIndex = 0;
+            nextTriviaQuestion();
         };
 
         const closeGame = () => {
@@ -1255,19 +1184,6 @@
             document.getElementById('helpResponse').style.display = 'none';
         };
 
-        const getSmartHelp = () => {
-            const query = document.getElementById('helpQuery').value.trim();
-            if (!query) return;
-
-            const helpResponses = {
-                default: "Bhai, ye to coding ka sawal hai! Acha, main btata hoon - samjhana easy nahi hai, lekin try kar dunga 😅"
-            };
-
-            const response = helpResponses.default;
-            document.getElementById('helpResponse').textContent = response;
-            document.getElementById('helpResponse').style.display = 'block';
-        };
-
         const openTimepass = () => {
             document.getElementById('timepassModal').classList.add('active');
             generateTimepass();
@@ -1277,65 +1193,166 @@
             document.getElementById('timepassModal').classList.remove('active');
         };
 
-        const generateTimepass = () => {
-            const facts = [
-                "Did you know? Honey never expires. Archaeologists have found 3000-year-old honey in Egyptian tombs that was still edible! 🍯",
-                "Python ka naam ek snake ke name par nahi, 'Monty Python' ke naam par rakha gaya tha! 🐍",
-                "Octopus ke 3 hearts hote hain - 2 gills ke liye aur 1 body ke liye! 🐙",
-                "Bananas are berries, lekin strawberries nahi hote berries! 🍌",
-                "Al-Khwarizmi se hi 'Algorithm' word aaya hai. Maths legend tha woh! 📐",
-                "HTTP ka 404 error ye matlab 'Not Found'. Legend hai ye! 💻",
-                "India mein IT professionals ki zyada demand hai than supply! 🚀",
-                "First computer programmer Ada Lovelace thi. Respect! 👩‍💻"
-            ];
-
-            const fact = facts[Math.floor(Math.random() * facts.length)];
-            document.getElementById('timepassContent').textContent = fact;
+        // ============ SETTINGS FUNCTIONS ============
+        const toggleSound = () => {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('soundToggle');
+            btn.textContent = soundEnabled ? '🔊' : '🔇';
         };
 
-        // ============ EVENT LISTENERS ============
-        document.getElementById('sendBtn').addEventListener('click', sendMessage);
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
+        const toggleTTS = () => {
+            const toggle = document.getElementById('ttsToggle');
+            toggle.classList.toggle('active');
+            soundEnabled = toggle.classList.contains('active');
+        };
 
-        document.getElementById('micBtn').addEventListener('click', startVoiceInput);
-        document.getElementById('settingsBtn').addEventListener('click', openSettings);
-        document.getElementById('soundToggle').addEventListener('click', () => {
-            soundEnabled = !soundEnabled;
-            document.getElementById('soundToggle').textContent = soundEnabled ? '🔊' : '🔇';
-        });
+        const clearChat = () => {
+            chatHistory = [];
+            saveChat();
+            renderMessages();
+            closeSettings();
+            alert('Chat history cleared! 🗑️');
+        };
 
-        document.getElementById('roastBtn').addEventListener('click', openRoast);
-        document.getElementById('gameBtn').addEventListener('click', openGame);
-        document.getElementById('helpBtn').addEventListener('click', openHelp);
-        document.getElementById('timepassBtn').addEventListener('click', openTimepass);
+        // ============ ROAST FUNCTIONS ============
+        const roasts = [
+            "Tum itne boring ho ki tumhare sath bhi time slow motion mein chalti hai! ⏱️",
+            "Tumhara IQ itna kam hai ki mobile screen par bhi reflection nahi dikhta! 📱",
+            "Tum itne predictable ho, Netflix ne already season 2 ka trailer banaya hai tumhare baare mein! 🎬",
+            "Tumhara sense of humor itna outdated hai, WhatsApp status bhi skip kar deta hai! 😬",
+            "Beta, tum itne irrelevant ho ki Google Chrome ne bhi tumhe remember nahi kia! 🔍",
+        ];
 
-        document.getElementById('ttsToggle').addEventListener('click', function() {
-            this.classList.toggle('active');
-            soundEnabled = this.classList.contains('active');
-        });
+        const generateRoast = () => {
+            const roast = roasts[Math.floor(Math.random() * roasts.length)];
+            document.getElementById('roastContent').textContent = roast;
+        };
 
-        // Close modals on overlay click
-        ['settingsModal', 'roastModal', 'gameModal', 'helpModal', 'timepassModal'].forEach(id => {
-            document.getElementById(id).addEventListener('click', (e) => {
-                if (e.target.id === id) {
-                    e.target.classList.remove('active');
+        // ============ GAME FUNCTIONS ============
+        const triviaQuestions = [
+            {
+                question: 'What is 2 + 2?',
+                options: ['3', '4', '5', '6'],
+                correct: 1
+            },
+            {
+                question: 'Which planet is known as the Red Planet?',
+                options: ['Venus', 'Mars', 'Jupiter', 'Saturn'],
+                correct: 1
+            },
+            {
+                question: 'What is the capital of France?',
+                options: ['London', 'Paris', 'Berlin', 'Rome'],
+                correct: 1
+            },
+            {
+                question: 'Who wrote Romeo and Juliet?',
+                options: ['Mark Twain', 'Jane Austen', 'William Shakespeare', 'Charles Dickens'],
+                correct: 2
+            },
+            {
+                question: 'What is the largest ocean on Earth?',
+                options: ['Atlantic', 'Indian', 'Arctic', 'Pacific'],
+                correct: 3
+            },
+        ];
+
+        const nextTriviaQuestion = () => {
+            if (currentTriviaIndex >= triviaQuestions.length) {
+                currentTriviaIndex = 0;
+            }
+
+            const question = triviaQuestions[currentTriviaIndex];
+            currentQuestion = question;
+
+            document.getElementById('triviaQuestion').textContent = question.question;
+            const optionsDiv = document.getElementById('triviaOptions');
+            optionsDiv.innerHTML = question.options.map((option, index) => `
+                <div class="trivia-option" onclick="selectTriviaOption(${index})">${option}</div>
+            `).join('');
+
+            currentTriviaIndex++;
+        };
+
+        const selectTriviaOption = (index) => {
+            const options = document.querySelectorAll('.trivia-option');
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                if (i === index) {
+                    opt.classList.add('selected');
+                    if (i === currentQuestion.correct) {
+                        opt.classList.remove('selected');
+                        opt.classList.add('correct');
+                        gameScore++;
+                        document.getElementById('gameScore').textContent = gameScore;
+                    } else {
+                        opt.classList.remove('selected');
+                        opt.classList.add('incorrect');
+                        options[currentQuestion.correct].classList.add('correct');
+                    }
                 }
             });
-        });
+            setTimeout(nextTriviaQuestion, 1500);
+        };
 
-        // ============ INIT ============
-        loadChat();
-        window.addEventListener('beforeunload', saveChat);
-
-        // Initial greeting
-        setTimeout(() => {
-            addMessage("Yo! Mein Omi, tera AI dost! 🤖 Kya bol, sab theek-thaak? Wanna get roasted? 😈", 'omi');
-            if (soundEnabled) {
-                speakMessage("Yo! Mein Omi, tera AI dost! Kya bol, sab theek-thaak?");
+        // ============ HELP FUNCTIONS ============
+        const getSmartHelp = () => {
+            const query = document.getElementById('helpQuery').value.trim();
+            if (!query) {
+                alert('Kuch likho na bhai! 📝');
+                return;
             }
-        }, 1000);
+
+            const responses = {
+                'hi': 'Hello! Sab theek? 😊',
+                'hello': 'Arre, namaste! Kaise ho? 🙏',
+                'help': 'Bhai, main yaha hoon. Kya problem hai? 🤝',
+                'love': 'Aww, love is in the air! 💕',
+                'sad': 'Dukhi mat ho bhai, main here hoon! 💪',
+                'happy': 'Yay! Khushi dekh kar meri bhi khushi hone lagi! 🎉',
+                'study': 'Padhte raho beta! Future Bright hoga! 📚',
+                'game': 'Khelna acha hai, par padhai bhi zaruri hai! 🎮📚',
+                'music': 'Music is life! Kaun sa gaana suno? 🎵',
+                'coding': 'Coding is fun! Keep debugging and coding! 💻',
+            };
+
+            const lowerQuery = query.toLowerCase();
+            let response = responses[lowerQuery];
+
+            if (!response) {
+                const fallbacks = [
+                    'Interesting question yaar! 🤔',
+                    'Hmm, socha nahi tha! 😅',
+                    'Good point! 💡',
+                    'Sahi baat hai! 👍',
+                    'Tum toh philosophy padh rahe ho! 🧠',
+                ];
+                response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+            }
+
+            const responseDiv = document.getElementById('helpResponse');
+            responseDiv.textContent = response;
+            responseDiv.style.display = 'block';
+        };
+
+        // ============ TIMEPASS FUNCTIONS ============
+        const funFacts = [
+            'Did you know? Honey never goes bad! 🍯',
+            'Fun fact: Bananas are berries, but strawberries arent! 🍌',
+            'Did you know? Octopuses have three hearts! 🐙',
+            'Fun fact: A group of flamingos is called a "flamboyance"! 🦩',
+            'Did you know? Penguins propose to their mates with pebbles! 💍',
+            'Fun fact: Cats have a third eyelid! 😸',
+            'Did you know? Koalas sleep 22 hours a day! 🐨',
+            'Fun fact: Sloths only poop once a week! 🦥',
+            'Did you know? Butterflies taste with their feet! 🦋',
+            'Fun fact: A group of crows is called a "murder"! 🐦',
+        ];
+
+        const generateTimepass = () => {
+            const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
+            document.getElementById('timepassContent').textContent = fact;
+        };
     </script>
 </body>
-  </html>
+</html>
