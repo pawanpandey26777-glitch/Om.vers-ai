@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMVERSE - OMI AI Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #FF4444;
+            --dark-black: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --text-dark: #2c2c2c;
+            --text-light: #666666;
+            --white: #ffffff;
+            --accent-blue: #3b82f6;
+            --accent-purple: #9333ea;
+            --success-green: #22c55e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        /* ============ HEADER ============ */
+        .header {
+            background: linear-gradient(135deg, var(--dark-black) 0%, #2a2a2a 100%);
+            color: var(--white);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--success-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--white);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ============ HERO SECTION ============ */
+        .hero {
+            background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+            padding: 24px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .omi-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 8px 24px rgba(255, 68, 68, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hero-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* ============ FEATURE BUTTONS ============ */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--light-gray);
+        }
+
+        .feature-btn {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 16px;
+            padding: 14px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-dark);
+        }
+
+        .feature-btn:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(255, 68, 68, 0.15);
+        }
+
+        .feature-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .feature-emoji {
+            font-size: 24px;
+        }
+
+        .feature-btn.roast {
+            border-color: var(--primary-red);
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.05), rgba(255, 68, 68, 0.02));
+        }
+
+        .feature-btn.roast:hover {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05));
+        }
+
+        /* ============ CHAT AREA ============ */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: var(--medium-gray);
+            border-radius: 3px;
+        }
+
+        .message {
+            display: flex;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            color: var(--white);
+            border-radius: 20px 4px 20px 20px;
+            font-weight: 500;
+        }
+
+        .message.omi .message-bubble {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            border-radius: 4px 20px 20px 20px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--text-light);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+
+        .speak-btn {
+            background: rgba(51, 65, 85, 0.1);
+            border: none;
+            color: var(--text-dark);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-top: 4px;
+        }
+
+        .speak-btn:hover {
+            background: rgba(51, 65, 85, 0.2);
+        }
+
+        /* ============ INPUT AREA ============ */
+        .input-area {
+            padding: 16px 20px;
+            background: var(--white);
+            border-top: 1px solid var(--medium-gray);
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 24px;
+            padding: 0 16px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary-red);
+            background: var(--white);
+        }
+
+        #messageInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 12px 0;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        #messageInput::placeholder {
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.15);
+            color: var(--primary-red);
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            border: none;
+            color: var(--white);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ============ MODALS ============ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 600px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .modal-content {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            color: var(--white);
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 68, 68, 0.3);
+        }
+
+        .modal-btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+        }
+
+        .modal-btn-secondary:hover {
+            background: var(--medium-gray);
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: var(--medium-gray);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active {
+            background: var(--success-green);
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--white);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active::after {
+            left: 24px;
+        }
+
+        .game-container {
+            background: var(--light-gray);
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .game-description {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .game-score {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-red);
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .trivia-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .trivia-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .trivia-option {
+            padding: 12px;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .trivia-option:hover {
+            border-color: var(--primary-red);
+        }
+
+        .trivia-option.selected {
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            color: var(--white);
+            border-color: var(--primary-red);
+        }
+
+        .trivia-option.correct {
+            background: var(--success-green);
+            color: var(--white);
+            border-color: var(--success-green);
+        }
+
+        .trivia-option.incorrect {
+            background: #ef4444;
+            color: var(--white);
+            border-color: #ef4444;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--light-gray);
+            border: none;
+            color: var(--text-dark);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: var(--medium-gray);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 480px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .features {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .empty-state-emoji {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-state-subtext {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">OM</div>
+                <div>
+                    <div class="header-title">OMVERSE</div>
+                </div>
+                <div class="online-indicator"></div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="soundToggle" title="Toggle sound">🔊</button>
+                <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="omi-avatar">🤖</div>
+            <div class="hero-text">Your AI dost, but thoda zyada savage 😈</div>
+            <div class="hero-subtitle">
+                <span class="status-dot"></span>
+                OMI is online
+            </div>
+        </div>
+
+        <!-- FEATURES -->
+        <div class="features">
+            <button class="feature-btn roast" id="roastBtn">
+                <div class="feature-emoji">🔥</div>
+                <div>Roast Me</div>
+            </button>
+            <button class="feature-btn" id="gameBtn">
+                <div class="feature-emoji">🎮</div>
+                <div>Game</div>
+            </button>
+            <button class="feature-btn" id="helpBtn">
+                <div class="feature-emoji">🧠</div>
+                <div>Smart Help</div>
+            </button>
+            <button class="feature-btn" id="timepassBtn">
+                <div class="feature-emoji">🎲</div>
+                <div>Timepass</div>
+            </button>
+        </div>
+
+        <!-- CHAT -->
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <div class="empty-state">
+                    <div class="empty-state-emoji">👋</div>
+                    <div class="empty-state-text">Arre, tum aa gaye!</div>
+                    <div class="empty-state-subtext">Kya bol raha? Roast chahiye ya sirf bakchodi?</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-area">
+            <div class="input-wrapper">
+                <input type="text" id="messageInput" placeholder="Kya bol? 😊" />
+                <button class="action-btn" id="micBtn" title="Voice input">🎤</button>
+            </div>
+            <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeSettings()">✕</button>
+            <div class="modal-header">⚙️ Settings</div>
+            
+            <div class="settings-group">
+                <label class="settings-label">Sound & Voice</label>
+                <div class="toggle-switch">
+                    <span style="flex: 1; text-align: left; font-size: 13px;">Text-to-Speech</span>
+                    <div class="switch active" id="ttsToggle"></div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label class="settings-label">Chat</label>
+                <button class="modal-btn modal-btn-secondary" onclick="clearChat()" style="width: 100%; text-align: left;">
+                    Clear Chat History
+                </button>
+            </div>
+
+            <div class="settings-group">
+                <label class="settings-label">About</label>
+                <div style="font-size: 13px; color: var(--text-light);">
+                    <div>OMVERSE v1.0</div>
+                    <div style="margin-top: 8px;">Made with ❤️ for you</div>
+                    <div>Omi is your savage AI friend 😈</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button class="modal-btn modal-btn-primary" onclick="closeSettings()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROAST MODAL -->
+    <div class="modal-overlay" id="roastModal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeRoast()">✕</button>
+            <div class="modal-header">🔥 Omi's Roast</div>
+            <div class="modal-content" id="roastContent">
+                Generating your roast... 🎯
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="generateRoast()">Get Another Roast</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeRoast()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME MODAL -->
+    <div class="modal-overlay" id="gameModal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeGame()">✕</button>
+            <div class="modal-header">🎮 Trivia Challenge</div>
+            <div class="game-container">
+                <div class="game-title">Score: <span id="gameScore">0</span></div>
+                <div class="trivia-question" id="triviaQuestion">Loading question...</div>
+                <div class="trivia-options" id="triviaOptions"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="nextTriviaQuestion()">Next Question</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeGame()">Quit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SMART HELP MODAL -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeHelp()">✕</button>
+            <div class="modal-header">🧠 Smart Help</div>
+            <div class="modal-content">
+                <div class="settings-group">
+                    <label class="settings-label">Kya maddad chahiye?</label>
+                    <input type="text" id="helpQuery" placeholder="Apna sawal likho..." style="width: 100%; padding: 10px; border: 2px solid var(--medium-gray); border-radius: 8px; font-size: 14px;" />
+                </div>
+                <div id="helpResponse" style="background: var(--light-gray); padding: 12px; border-radius: 8px; font-size: 13px; color: var(--text-light); line-height: 1.5; display: none;"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="getSmartHelp()">Ask OMI</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeHelp()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIMEPASS MODAL -->
+    <div class="modal-overlay" id="timepassModal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeTimepass()">✕</button>
+            <div class="modal-header">🎲 Timepass</div>
+            <div class="modal-content" id="timepassContent">
+                Generating fun facts... 🎯
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="generateTimepass()">Next</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeTimepass()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ STATE ============
+        let chatHistory = [];
+        let gameScore = 0;
+        let currentQuestion = null;
+        let isSpeaking = false;
+        let soundEnabled = true;
+        let currentTriviaIndex = 0;
+
+        // ============ UTILITIES ============
+        const getTime = () => {
+            const now = new Date();
+            return now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        };
+
+        const saveChat = () => {
+            localStorage.setItem('omverse_chat', JSON.stringify(chatHistory));
+        };
+
+        const loadChat = () => {
+            const saved = localStorage.getItem('omverse_chat');
+            if (saved) {
+                chatHistory = JSON.parse(saved);
+                renderMessages();
+            }
+        };
+
+        // ============ UI FUNCTIONS ============
+        const renderMessages = () => {
+            const messagesDiv = document.getElementById('messages');
+            if (chatHistory.length === 0) {
+                messagesDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-emoji">👋</div>
+                        <div class="empty-state-text">Arre, tum aa gaye!</div>
+                        <div class="empty-state-subtext">Kya bol raha? Roast chahiye ya sirf bakchodi?</div>
+                    </div>
+                `;
+                return;
+            }
+
+            messagesDiv.innerHTML = chatHistory.map(msg => `
+                <div class="message ${msg.type}">
+                    <div>
+                        <div class="message-bubble">${escapeHtml(msg.text)}</div>
+                        <div class="message-time">${msg.time}</div>
+                        ${msg.type === 'omi' ? `<button class="speak-btn" onclick="speakMessage('${escapeHtml(msg.text).replace(/'/g, "\\'")}')">🔊</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        };
+
+        const showTyping = () => {
+            const messagesDiv = document.getElementById('messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message omi';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            typingDiv.id = 'typingIndicator';
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        };
+
+        const removeTyping = () => {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        };
+
+        const escapeHtml = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+
+        const addMessage = (text, type = 'user') => {
+            chatHistory.push({
+                text,
+                type,
+                time: getTime()
+            });
+            saveChat();
+            renderMessages();
+        };
+
+        const speakMessage = (text) => {
+            if (!soundEnabled) return;
+            
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        };
+
+        // ============ CHAT LOGIC ============
+        const omiResponses = {
+            roast: [
+                "Bhai tera code itna complicated hai ki ChatGPT bhi depression mein aa gaya 😂",
+                "Tere baare mein ek baat kahun? Tu itna 'busy' hai ki sirf apne aap se baat karta hai 💀",
+                "Teri coding style dekh ke JavaScript ke inventor ne suicide note likha 😅",
+                "Bhai, tere logic se zyada twisted woh pretzel hota hai jo bakery mein bikta hai 🥨",
+                "Tu itna lazy hai ki async-await ko bhi inspiration milta hai tere se 💤"
+            ],
+            normal: [
+                "Arre, kya haal chaal? Sab theek-thaak? 😊",
+                "Haan bhai, main hoon. Bol, kya chahiye? 🎯",
+                "Yo! Kya chal raha hai? Bata na, bore ho raha hoon na 😂",
+                "Arre, tu aa gaya! Accha tha na mera roast? 🔥",
+                "Bhai, main to shukar mana raha hoon na... tum kaam karte ho ya sirf main se baat karte ho? 😅"
+            ],
+            help: [
+                "Arey, problem kya hai bhai? Bata, main samjha dunga 🧠",
+                "Haan beta, pucha toh sahi! Aaja, dono milon-milakar solve kar denge 💪",
+                "Smart help? More like dumb question, par koi bat nahi! Bol na 😂"
+            ],
+            game: [
+                "Chalega! Lekin careful, main toh bohut hard questions puchunga 🎮",
+                "Game mode ON! Dekhte hain tere zyada marks aate hain ya main jita dunga 🏆"
+            ]
+        };
+
+        const getOmiResponse = (userMessage) => {
+            const lower = userMessage.toLowerCase();
+            
+            if (lower.includes('roast') || lower.includes('mujhe') || lower.includes('teri baat')) {
+                return omiResponses.roast[Math.floor(Math.random() * omiResponses.roast.length)];
+            }
+            if (lower.includes('help') || lower.includes('sikhao') || lower.includes('samjha')) {
+                return omiResponses.help[Math.floor(Math.random() * omiResponses.help.length)];
+            }
+            if (lower.includes('game') || lower.includes('trivia')) {
+                return omiResponses.game[Math.floor(Math.random() * omiResponses.game.length)];
+            }
+            return omiResponses.normal[Math.floor(Math.random() * omiResponses.normal.length)];
+        };
+
+        const sendMessage = async () => {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            addMessage(text, 'user');
+            input.value = '';
+
+            showTyping();
+
+            // Simulate response delay
+            setTimeout(() => {
+                removeTyping();
+                const response = getOmiResponse(text);
+                addMessage(response, 'omi');
+
+                if (soundEnabled) {
+                    speakMessage(response);
+                }
+            }, 1200 + Math.random() * 800);
+        };
+
+        // ============ FEATURES ============
+        const roasts = [
+            "Bhai tera dimaag itna slow hai ki 56k modem bhi complain kar de 😂",
+            "Tu itna confusing hai na, semicolon aur full stop bhi tere samne lost ho jate hain 💀",
+            "Teri problem-solving skills dekh ke AI bhi shutdown ho gaya 🔌",
+            "Bhai, tere ideas itne raw hain na ki Ramsay Gordon bhi apne kitchen se nikaal de 🔪",
+            "Tu itna indecisive hai na ki null pointer khaud mein error experience karta hai 🤖",
+            "Teri logic dekh ke boolean types bhi confused ho gaye - true ho ya false? 🤔",
+            "Bhai, tere jokes itne slow load hote hain na ki buffering indicator bhi timer lagaa de 💀",
+            "Tu itna dramatic hai na, Exception handling mein inspired karte hain tujhse 🎭"
+        ];
+
+        const generateRoast = () => {
+            const roast = roasts[Math.floor(Math.random() * roasts.length)];
+            document.getElementById('roastContent').textContent = roast;
+            addMessage(`Omi ne roast kiya: ${roast}`, 'omi');
+        };
+
+        // ============ TRIVIA GAME ============
+        const triviaQuestions = [
+            {
+                question: "Python mein "list" ka use kya hota hai?",
+                options: ["Ordered collection", "Only for numbers", "String ke liye", "Function ka naam"],
+                correct: 0
+            },
+            {
+                question: "Git mein "commit" ka matlab?",
+                options: ["Code upload karna", "Changes ko save karna", "Project delete karna", "Internet status"],
+                correct: 1
+            },
+            {
+                question: "HTML ka full form kya hai?",
+                options: ["Hyper Text Mark Language", "Hyper Text Markup Language", "High Tech Mark Language", "Home Text Mark Link"],
+                correct: 1
+            },
+            {
+                question: "CSS ka use kaise hota hai?",
+                options: ["Logic likhnaa", "Database bananna", "Styling aur layout", "Mobile app bananaa"],
+                correct: 2
+            },
+            {
+                question: "JavaScript mein variable declare karne ke liye kya use hote hain?",
+                options: ["var, const, let", "define, class, function", "class, object, array", "import, export, default"],
+                correct: 0
+            },
+            {
+                question: "API ka full form?",
+                options: ["Application Programming Interface", "Advanced Programming Instruction", "Array Processing Input", "Application Process Installation"],
+                correct: 0
+            },
+            {
+                question: "Database ka kya kaam hota hai?",
+                options: ["Website bananna", "Data store karna", "Styling karna", "Sound laganna"],
+                correct: 1
+            },
+            {
+                question: "React mein component kya hota hai?",
+                options: ["CSS file", "Function ya class", "Database entry", "Server side code"],
+                correct: 1
+            }
+        ];
+
+        const startTrivia = () => {
+            gameScore = 0;
+            currentTriviaIndex = 0;
+            document.getElementById('gameScore').textContent = '0';
+            nextTriviaQuestion();
+        };
+
+        const nextTriviaQuestion = () => {
+            if (currentTriviaIndex >= triviaQuestions.length) {
+                currentTriviaIndex = 0;
+            }
+
+            const q = triviaQuestions[currentTriviaIndex];
+            document.getElementById('triviaQuestion').textContent = q.question;
+            
+            const optionsDiv = document.getElementById('triviaOptions');
+            optionsDiv.innerHTML = q.options.map((opt, idx) => `
+                <button class="trivia-option" onclick="selectTrivia(${idx}, ${q.correct})">
+                    ${opt}
+                </button>
+            `).join('');
+
+            currentTriviaIndex++;
+        };
+
+        const selectTrivia = (selected, correct) => {
+            const options = document.querySelectorAll('.trivia-option');
+            
+            options.forEach((opt, idx) => {
+                if (idx === correct) {
+                    opt.classList.add('correct');
+                } else if (idx === selected && selected !== correct) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+
+            if (selected === correct) {
+                gameScore += 10;
+                document.getElementById('gameScore').textContent = gameScore;
+            }
+        };
+
+        // ============ VOICE INPUT ============
+        const startVoiceInput = () => {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Voice input not supported in this browser');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            recognition.language = 'hi-IN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.start();
+            document.getElementById('micBtn').style.color = 'var(--primary-red)';
+
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    finalTranscript += event.results[i][0].transcript;
+                }
+                
+                if (finalTranscript) {
+                    document.getElementById('messageInput').value = finalTranscript;
+                }
+            };
+
+            recognition.onerror = () => {
+                console.log('Voice input error');
+            };
+
+            recognition.onend = () => {
+                document.getElementById('micBtn').style.color = 'var(--text-dark)';
+            };
+        };
+
+        // ============ MODALS ============
+        const openSettings = () => {
+            document.getElementById('settingsModal').classList.add('active');
+        };
+
+        const closeSettings = () => {
+            document.getElementById('settingsModal').classList.remove('active');
+        };
+
+        const clearChat = () => {
+            if (confirm('Chat history delete kar du? 🗑️')) {
+                chatHistory = [];
+                saveChat();
+                renderMessages();
+                closeSettings();
+            }
+        };
+
+        const openRoast = () => {
+            document.getElementById('roastModal').classList.add('active');
+            generateRoast();
+        };
+
+        const closeRoast = () => {
+            document.getElementById('roastModal').classList.remove('active');
+        };
+
+        const openGame = () => {
+            document.getElementById('gameModal').classList.add('active');
+            startTrivia();
+        };
+
+        const closeGame = () => {
+            document.getElementById('gameModal').classList.remove('active');
+        };
+
+        const openHelp = () => {
+            document.getElementById('helpModal').classList.add('active');
+        };
+
+        const closeHelp = () => {
+            document.getElementById('helpModal').classList.remove('active');
+            document.getElementById('helpResponse').style.display = 'none';
+        };
+
+        const getSmartHelp = () => {
+            const query = document.getElementById('helpQuery').value.trim();
+            if (!query) return;
+
+            const helpResponses = {
+                default: "Bhai, ye to coding ka sawal hai! Acha, main btata hoon - samjhana easy nahi hai, lekin try kar dunga 😅"
+            };
+
+            const response = helpResponses.default;
+            document.getElementById('helpResponse').textContent = response;
+            document.getElementById('helpResponse').style.display = 'block';
+        };
+
+        const openTimepass = () => {
+            document.getElementById('timepassModal').classList.add('active');
+            generateTimepass();
+        };
+
+        const closeTimepass = () => {
+            document.getElementById('timepassModal').classList.remove('active');
+        };
+
+        const generateTimepass = () => {
+            const facts = [
+                "Did you know? Honey never expires. Archaeologists have found 3000-year-old honey in Egyptian tombs that was still edible! 🍯",
+                "Python ka naam ek snake ke name par nahi, 'Monty Python' ke naam par rakha gaya tha! 🐍",
+                "Octopus ke 3 hearts hote hain - 2 gills ke liye aur 1 body ke liye! 🐙",
+                "Bananas are berries, lekin strawberries nahi hote berries! 🍌",
+                "Al-Khwarizmi se hi 'Algorithm' word aaya hai. Maths legend tha woh! 📐",
+                "HTTP ka 404 error ye matlab 'Not Found'. Legend hai ye! 💻",
+                "India mein IT professionals ki zyada demand hai than supply! 🚀",
+                "First computer programmer Ada Lovelace thi. Respect! 👩‍💻"
+            ];
+
+            const fact = facts[Math.floor(Math.random() * facts.length)];
+            document.getElementById('timepassContent').textContent = fact;
+        };
+
+        // ============ EVENT LISTENERS ============
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        document.getElementById('micBtn').addEventListener('click', startVoiceInput);
+        document.getElementById('settingsBtn').addEventListener('click', openSettings);
+        document.getElementById('soundToggle').addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundToggle').textContent = soundEnabled ? '🔊' : '🔇';
+        });
+
+        document.getElementById('roastBtn').addEventListener('click', openRoast);
+        document.getElementById('gameBtn').addEventListener('click', openGame);
+        document.getElementById('helpBtn').addEventListener('click', openHelp);
+        document.getElementById('timepassBtn').addEventListener('click', openTimepass);
+
+        document.getElementById('ttsToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            soundEnabled = this.classList.contains('active');
+        });
+
+        // Close modals on overlay click
+        ['settingsModal', 'roastModal', 'gameModal', 'helpModal', 'timepassModal'].forEach(id => {
+            document.getElementById(id).addEventListener('click', (e) => {
+                if (e.target.id === id) {
+                    e.target.classList.remove('active');
+                }
+            });
+        });
+
+        // ============ INIT ============
+        loadChat();
+        window.addEventListener('beforeunload', saveChat);
+
+        // Initial greeting
+        setTimeout(() => {
+            addMessage("Yo! Mein Omi, tera AI dost! 🤖 Kya bol, sab theek-thaak? Wanna get roasted? 😈", 'omi');
+            if (soundEnabled) {
+                speakMessage("Yo! Mein Omi, tera AI dost! Kya bol, sab theek-thaak?");
+            }
+        }, 1000);
+    </script>
+</body>
+  </html>
