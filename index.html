@@ -1,3 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OMVERSE — AI Studio (Replica)</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-0: #05060a;
+      --bg-1: #071122;
+      --panel: rgba(255,255,255,0.03);
+      --glass: rgba(255,255,255,0.02);
+      --accent-cyan: #00f0ff;
+      --accent-purple: #7b5cff;
+      --muted: rgba(255,255,255,0.35);
+      --success: #59ffa3;
+      --danger: #ff6b6b;
+      --glass-border: rgba(255,255,255,0.06);
+      --blur: 18px;
+      --radius-lg: 14px;
+      --radius-sm: 10px;
+      --shadow-neon: 0 6px 30px rgba(123,92,255,0.08), 0 2px 8px rgba(0,240,255,0.04);
+    }
+
+    /* Global */
+    * { box-sizing: border-box; }
+    html,body { height:100%; margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#e6f7ff; background: radial-gradient(1200px 800px at 10% 10%, rgba(0,240,255,0.03), transparent 6%), radial-gradient(1000px 700px at 90% 90%, rgba(123,92,255,0.02), transparent 10%), linear-gradient(180deg,var(--bg-0),var(--bg-1)); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; -webkit-tap-highlight-color: transparent;}
+    a { color:inherit; text-decoration:none; }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 88px 1fr 380px;
+      gap: 20px;
+      padding: 28px;
+      height:100vh;
+      align-items:stretch;
+    }
+
+    /* Sidebar (left) */
+    .sidebar {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 18px 10px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 18px;
+      position:relative;
+      box-shadow: var(--shadow-neon);
+      backdrop-filter: blur(var(--blur));
+      min-height:0;
+    }
+
+    .logo-wrap{
+      display:flex; align-items:center; gap:10px; flex-direction:column;
+      width:100%;
+    }
+
+    .omi-badge{
+      width:56px; height:56px; display:flex; align-items:center; justify-content:center;
+      border-radius:12px;
+      background: linear-gradient(135deg, rgba(0,240,255,0.12), rgba(123,92,255,0.12));
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 6px 20px rgba(123,92,255,0.06), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .logo-label { font-family:Orbitron, Inter; font-weight:700; letter-spacing:0.6px; font-size:9px; color:var(--accent-cyan); text-transform:uppercase; opacity:0.95; }
+
+    .modes {
+      display:flex; flex-direction:column; gap:12px; align-items:center; width:100%;
+    }
+
+    .mode-btn {
+      width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border:1px solid var(--glass-border); color:var(--muted); cursor:pointer; transition: all 220ms ease;
+      position:relative; overflow:visible;
+    }
+    .mode-btn.active { color:#fff; box-shadow:0 6px 18px rgba(0,240,255,0.06), 0 0 30px rgba(123,92,255,0.05); transform: translateY(-4px); border:1px solid rgba(0,240,255,0.18); }
+    .mode-btn svg { width:22px; height:22px; opacity:0.95; filter: drop-shadow(0 6px 18px rgba(0,240,255,0.06)); }
+
+    .sidebar-footer { margin-top:auto; width:100%; display:flex; flex-direction:column; gap:8px; align-items:center; }
+
+    /* Main (center) */
+    .main {
+      display:flex; flex-direction:column; gap:18px; min-width:0;
+      backdrop-filter: blur(6px);
+    }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+      border:1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display:flex; gap:18px; align-items:center; box-shadow: var(--shadow-neon);
+    }
+    .welcome-left { display:flex; gap:14px; align-items:center; min-width:0; }
+    .omi-avatar {
+      width:84px; height:84px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(circle at 30% 20%, rgba(0,240,255,0.12), transparent 20%), linear-gradient(180deg, rgba(123,92,255,0.06), rgba(0,0,0,0.02));
+      border:1px solid rgba(255,255,255,0.04); box-shadow: 0 12px 40px rgba(0,0,0,0.5), inset 0 2px 10px rgba(255,255,255,0.02);
+    }
+    .welcome-title { font-family:Orbitron, Inter; font-size:20px; font-weight:700; color:#e8fbff; margin:0; }
+    .welcome-sub { font-size:13px; color:var(--muted); margin-top:4px; }
+
+    .mode-toggles { margin-left:auto; display:flex; gap:10px; align-items:center; }
+
+    .pill {
+      padding:8px 12px; border-radius:12px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border); color:var(--muted); font-weight:600; cursor:pointer; font-size:13px;
+    }
+    .pill.active { color:#fff; border:1px solid rgba(0,240,255,0.14); box-shadow: 0 6px 20px rgba(0,240,255,0.04); }
+
+    /* Chat area */
+    .chat-panel {
+      flex:1; overflow:auto; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.0));
+      border:1px solid var(--glass-border); display:flex; flex-direction:column; gap:14px;
+      min-height:0;
+    }
+
+    .chat-inner {
+      display:flex; flex-direction:column; gap:14px; width:100%;
+    }
+
+    .msg {
+      max-width:72%;
+      padding:12px 14px;
+      border-radius:12px;
+      display:inline-block;
+      line-height:1.25;
+      font-size:14px;
+      animation: bubbleIn .28s ease both;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      position:relative;
+    }
+    @keyframes bubbleIn {
+      from { transform: translateY(8px) scale(0.98); opacity:0; }
+      to { transform: translateY(0) scale(1); opacity:1; }
+    }
+
+    .msg.bot {
+      align-self:flex-start;
+      background: linear-gradient(180deg, rgba(0,240,255,0.06), rgba(123,92,255,0.03));
+      border: 1px solid rgba(0,240,255,0.12);
+      color: #e8fbff;
+      box-shadow: 0 10px 30px rgba(0,240,255,0.03);
+    }
+    .msg.user {
+      align-self:flex-end;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      color:#dff9ff;
+      text-align:right;
+    }
+
+    .meta { font-size:11px; color:var(--muted); margin-top:8px; display:flex; gap:8px; align-items:center; justify-content:flex-start; }
+    .msg.user .meta { justify-content:flex-end; }
+
+    .quick-actions {
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .quick {
+      padding:8px 12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid var(--glass-border);
+      color:var(--muted); cursor:pointer; font-size:13px; transition:all 180ms ease;
+    }
+    .quick:hover { transform:translateY(-4px); color:#fff; border:1px solid rgba(0,240,255,0.12); }
+
+    /* Right panel (assistant controls / history) */
+    .right {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: 16px; padding:18px; border:1px solid var(--glass-border); display:flex; flex-direction:column; gap:12px;
+      min-height:0;
+    }
+    .section-title { font-weight:700; color:#e9fbff; font-size:13px; display:flex; align-items:center; gap:8px; }
+    .history-list { display:flex; flex-direction:column; gap:8px; overflow:auto; padding-right:6px; }
+    .history-item { padding:12px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.02); color:var(--muted); cursor:pointer; display:flex; align-items:center; gap:10px; }
+    .history-item:hover { background: rgba(255,255,255,0.01); color:#fff; transform:translateX(4px); }
+
+    /* Input area */
+    .composer {
+      height:78px; border-radius:14px; padding:12px; display:flex; gap:12px; align-items:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      position:fixed; left: calc(88px + 28px); right: calc(380px + 28px); bottom: 28px; transition: all 200ms ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .composer .left {
+      display:flex; gap:10px; align-items:center; min-width:0; flex:1;
+    }
+
+    .input {
+      flex:1; background:transparent; border:none; outline:none; color:#e8fbff; font-size:15px;
+      padding:12px 14px; border-radius:10px; border:1px dashed rgba(255,255,255,0.03);
+    }
+    .tool-btn {
+      width:46px; height:46px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border:1px solid var(--glass-border); cursor:pointer; color:var(--muted);
+    }
+    .send-btn {
+      min-width:64px; height:46px; padding:0 14px; display:inline-flex; gap:8px; align-items:center; justify-content:center; border-radius:10px;
+      background: linear-gradient(90deg, rgba(0,240,255,0.14), rgba(123,92,255,0.12)); border: none; color:#01121a; font-weight:700; cursor:pointer;
+      box-shadow: 0 8px 30px rgba(0,240,255,0.10);
+    }
+
+    /* Mobile / responsive */
+    @media (max-width:1000px){
+      .app { grid-template-columns: 72px 1fr; padding:16px; grid-auto-rows:auto; }
+      .composer { left: calc(72px + 16px); right: 16px; bottom: 16px; height:72px; border-radius:12px; }
+      .right { display:none; }
+      .app { grid-template-columns: 72px 1fr; }
+      .sidebar { padding:12px 8px; gap:12px; }
+      .logo-wrap { gap:6px; }
+      .welcome-title { font-size:16px; }
+    }
+    @media (max-width:640px){
+      .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; padding:12px; }
+      .sidebar { position:fixed; left:12px; top:12px; width:64px; z-index:80; }
+      .composer { left: 12px; right:12px; bottom: 12px; }
+      .welcome-card { flex-direction:column; align-items:flex-start; gap:12px; }
+    }
+
+    /* little utilities */
+    .muted { color:var(--muted); font-size:13px; }
+    .small { font-size:12px; color:var(--muted); }
+
+    /* typing indicator */
+    .typing {
+      display:inline-flex; gap:6px; align-items:center;
+    }
+    .dot { width:7px; height:7px; background:rgba(255,255,255,0.9); border-radius:50%; opacity:0.16; animation: bounce 1s infinite; }
+    .dot:nth-child(2) { animation-delay:0.12s; }
+    .dot:nth-child(3) { animation-delay:0.24s; }
+    @keyframes bounce {
+      0% { transform: translateY(0); opacity:0.16; }
+      40% { transform: translateY(-6px); opacity:1; }
+      80% { transform: translateY(0); opacity:0.16; }
+    }
+
+  </style>
+
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" aria-label="Side navigation">
+      <div class="logo-wrap">
+        <div class="omi-badge" id="logo">
+          <!-- Stylized OMI avatar SVG (unique vector, not an external image) -->
+          <svg viewBox="0 0 64 64" width="46" height="46" fill="none" aria-hidden="true">
+            <defs>
+              <radialGradient id="g1" cx="30%" cy="24%">
+                <stop offset="0" stop-color="#00f0ff" stop-opacity="0.95"></stop>
+                <stop offset="1" stop-color="#7b5cff" stop-opacity="0.6"></stop>
+              </radialGradient>
+            </defs>
+            <rect x="2" y="2" width="60" height="60" rx="12" fill="url(#g1)"></rect>
+            <g transform="translate(12,12)" fill="#00121a">
+              <path d="M20 2c-3.9 0-7 3.5-7 8s3.1 8 7 8c3.9 0 7-3.5 7-8s-3.1-8-7-8zm0 2c2.2 0 4 2.2 4 6s-1.8 6-4 6-4-2.2-4-6 1.8-6 4-6z"></path>
+              <path d="M6 30c0-6.6 6.6-12 14-12s14 5.4 14 12v2H6v-2z" opacity="0.18"></path>
+            </g>
+          </svg>
+        </div>
+        <div class="logo-label">OMI STUDIO</div>
+      </div>
+
+      <div class="modes" role="tablist" aria-orientation="vertical">
+        <button class="mode-btn active" data-mode="assistant" title="Assistant" aria-pressed="true">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2L2 7v6c0 5 6 9 10 9s10-4 10-9V7L12 2z"></path></svg>
+        </button>
+        <button class="mode-btn" data-mode="studio" title="Studio" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 7h18v10H3V7zm2 2v6h14V9H5z"></path></svg>
+        </button>
+        <button class="mode-btn" data-mode="explore" title="Explore" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l3.1 6.9L22 12l-6.9 3.1L12 22l-3.1-6.9L2 12l6.9-3.1L12 2z"></path></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="small muted">Version 1.0 · Prototype</div>
+        <button class="mode-btn" id="collapse" title="Collapse">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 12h12v2H6z"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- CENTER -->
+    <main class="main">
+      <div class="topbar">
+        <div style="display:flex;gap:12px;align-items:center;">
+          <div class="welcome-card" aria-live="polite">
+            <div class="welcome-left">
+              <div class="omi-avatar" aria-hidden="true">
+                <svg viewBox="0 0 72 72" width="64" height="64">
+                  <defs>
+                    <linearGradient id="lg1" x1="0" x2="1">
+                      <stop offset="0" stop-color="#00f0ff"></stop>
+                      <stop offset="1" stop-color="#7b5cff"></stop>
+                    </linearGradient>
+                  </defs>
+                  <rect x="4" y="4" width="64" height="64" rx="12" fill="url(#lg1)" opacity="0.18"></rect>
+                  <g transform="translate(10,10)" fill="#e6fbff">
+                    <path d="M26 4c-6.6 0-12 5.4-12 12s5.4 12 12 12 12-5.4 12-12S32.6 4 26 4z" opacity="0.9"></path>
+                    <circle cx="26" cy="16" r="4" fill="#00121a"></circle>
+                  </g>
+                </svg>
+              </div>
+              <div style="min-width:0;">
+                <div class="welcome-title">Welcome to OMVERSE</div>
+                <div class="welcome-sub">Your AI creative studio — talk to OMI, create, or explore templates.</div>
+              </div>
+            </div>
+
+            <div class="mode-toggles">
+              <button class="pill active" data-mode-pill="chat">Chat</button>
+              <button class="pill" data-mode-pill="create">Create</button>
+              <button class="pill" data-mode-pill="assist">Assist</button>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="muted small">Model:</div>
+            <div class="pill">OMI-X v2</div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="quick-actions" role="toolbar" aria-label="Quick actions">
+            <button class="quick" data-quick="summarize">Summarize</button>
+            <button class="quick" data-quick="rewrite">Rewrite</button>
+            <button class="quick" data-quick="idea">Generate Idea</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="chat-panel" id="chatPanel" aria-label="Chat panel">
+        <div class="chat-inner" id="chatInner">
+          <!-- sample messages -->
+          <div class="msg bot">
+            Hey — I'm OMI. How can I help you create today?
+            <div class="meta"><span class="small">OMI · just now</span></div>
+          </div>
+
+          <div class="msg user">
+            I want a futuristic brand concept for "Neon Harbor".
+            <div class="meta"><span class="small">You · 1m</span></div>
+          </div>
+
+          <div class="msg bot">
+            Great — here's a short concept: <strong>Neon Harbor</strong> — a nocturnal tech brand blending maritime imagery with cyberpunk neon. Would you like logo ideas, color palettes, or a tagline?
+            <div class="meta"><span class="small">OMI · 45s</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- RIGHT COLUMN -->
+    <aside class="right" aria-label="Assistant controls">
+      <div class="section-title">Quick Templates</div>
+      <div class="history-list">
+        <div class="history-item" data-template="Write a friendly product description for: ">
+          Product Description
+        </div>
+        <div class="history-item" data-template="Create social captions for: ">
+          Social Captions
+        </div>
+        <div class="history-item" data-template="Generate 5 name ideas for: ">
+          Name Ideas
+        </div>
+        <div class="history-item" data-template="Create an onboarding email for: ">
+          Onboarding Email
+        </div>
+      </div>
+
+      <div style="height:8px"></div>
+
+      <div class="section-title">Conversation Tools</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="quick" id="regenerate">Regenerate</button>
+        <button class="quick" id="clearChat">Clear</button>
+        <button class="quick" id="exportChat">Export</button>
+      </div>
+
+      <div style="height:8px"></div>
+
+      <div class="section-title">Settings</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="small muted">Appearance</div>
+        <div style="display:flex;gap:8px;">
+          <button class="pill" data-accent="cyan">Cyan</button>
+          <button class="pill" data-accent="purple">Purple</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Composer (fixed) -->
+    <div class="composer" role="region" aria-label="Message composer">
+      <div class="left">
+        <button class="tool-btn" id="attach" title="Attach">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16.5 6.7L9.4 13.8a4 4 0 11-5.7-5.6l7.1-7.1a6 6 0 118.5 8.5L11 19.3"></path></svg>
+        </button>
+
+        <input id="inputBox" class="input" placeholder="Ask OMI... (try: 'Create a brand tagline for a cyberpunk cafe')" aria-label="Message input" />
+
+        <button class="tool-btn" id="mic" title="Voice input">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3z"></path><path d="M19 11v1a7 7 0 01-14 0v-1"></path></svg>
+        </button>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="send-btn" id="sendBtn" title="Send message">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#01121a" style="transform:rotate(-20deg)"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"></path></svg>
+          Send
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Minimal interactive behavior to emulate OMVERSE studio UX:
+    (function(){
+      const app = document.getElementById('app');
+      const chatInner = document.getElementById('chatInner');
+      const inputBox = document.getElementById('inputBox');
+      const sendBtn = document.getElementById('sendBtn');
+      const quicks = document.querySelectorAll('[data-quick]');
+      const historyTemplates = document.querySelectorAll('.history-item');
+      const modeButtons = document.querySelectorAll('.mode-btn');
+      const pills = document.querySelectorAll('.pill[data-accent], .pill[data-mode-pill]');
+      const accentButtons = document.querySelectorAll('[data-accent]');
+      const collapseBtn = document.getElementById('collapse');
+
+      // Utility to add message
+      function addMessage(text, who='bot', timeLabel='just now', opts={}) {
+        const node = document.createElement('div');
+        node.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
+        node.innerHTML = sanitize(text) + '<div class="meta"><span class="small">' + (who === 'user' ? 'You' : 'OMI') + ' · ' + timeLabel + '</span></div>';
+        chatInner.appendChild(node);
+        // scroll
+        chatInner.parentElement.scrollTop = chatInner.parentElement.scrollHeight;
+      }
+
+      // sanitize minimal
+      function sanitize(s){
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML.replace(/\\n/g,'<br/>');
+      }
+
+      // Simulate a typing indicator
+      function showTyping() {
+        const t = document.createElement('div');
+        t.className = 'msg bot';
+        t.id = 'typingIndicator';
+        t.innerHTML = '<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="meta"><span class="small">OMI · typing</span></div>';
+        chatInner.appendChild(t);
+        chatInner.parentElement.scrollTop = chatInner.parentElement.scrollHeight;
+      }
+      function removeTyping() {
+        const t = document.getElementById('typingIndicator');
+        if (t) t.remove();
+      }
+
+      // send event
+      function sendMessage(){
+        const text = inputBox.value.trim();
+        if (!text) return;
+        addMessage(text, 'user', 'now');
+        inputBox.value = '';
+        // show typing
+        showTyping();
+        // simulate network delay
+        setTimeout(() => {
+          removeTyping();
+          // generate reply (simple echo + small enhancement)
+          const reply = generateReply(text);
+          addMessage(reply, 'bot', 'just now');
+        }, 900 + Math.random()*900);
+      }
+
+      function generateReply(prompt){
+        // short pseudo-AI reply patterns to emulate OMI behavior
+        const lower = prompt.toLowerCase();
+        if (lower.includes('tagline') || lower.includes('slogan')) {
+          return 'Tagline ideas: "Glow beyond horizon", "Where neon meets narrative", "Harbors of tomorrow."';
+        }
+        if (lower.includes('color') || lower.includes('palette')) {
+          return 'Suggested palette: Deep #071122 background, Neon Cyan #00f0ff, Ultraviolet #7b5cff, Soft Coral #ff8aa3.';
+        }
+        if (lower.includes('logo') || lower.includes('icon')) {
+          return 'Logo idea: a stylized orbital beacon merging an anchor shape with a glowing ring — logotype in Orbitron.';
+        }
+        if (lower.includes('summarize')) {
+          return 'Summary: Neon Harbor is a nocturnal tech brand that blends maritime motifs with cyberpunk neon; ideal for nightlife, F&B, and immersive tech experiences.';
+        }
+        // fallback
+        return "I can help with that — do you want variations, a short description, or a creative direction?";
+      }
+
+      // Quick action handlers
+      quicks.forEach(q => q.addEventListener('click', (e)=>{
+        const qv = e.currentTarget.dataset.quick;
+        if (qv === 'summarize') {
+          inputBox.value = 'Summarize the following text: ';
+        } else if (qv === 'rewrite') {
+          inputBox.value = 'Rewrite this to be more concise: ';
+        } else if (qv === 'idea') {
+          inputBox.value = 'Generate 10 ideas for: ';
+        }
+        inputBox.focus();
+      }));
+
+      // history templates
+      historyTemplates.forEach(it => it.addEventListener('click', ()=>{
+        inputBox.value = it.dataset.template;
+        inputBox.focus();
+      }));
+
+      // send on click or Enter
+      sendBtn.addEventListener('click', sendMessage);
+      inputBox.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // mode buttons toggle
+      modeButtons.forEach(btn => btn.addEventListener('click', ()=>{
+        modeButtons.forEach(b=> { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed','true');
+        // small visual feedback: change main accent
+        const mode = btn.dataset.mode;
+        if (mode === 'studio') {
+          document.documentElement.style.setProperty('--accent-cyan', '#8af1ff');
+          document.documentElement.style.setProperty('--accent-purple', '#a07bff');
+        } else if (mode === 'explore') {
+          document.documentElement.style.setProperty('--accent-cyan', '#00ffd0');
+          document.documentElement.style.setProperty('--accent-purple', '#ff7bdc');
+        } else {
+          document.documentElement.style.setProperty('--accent-cyan', '#00f0ff');
+          document.documentElement.style.setProperty('--accent-purple', '#7b5cff');
+        }
+      }));
+
+      // accent pill buttons
+      accentButtons.forEach(b => b.addEventListener('click', ()=>{
+        accentButtons.forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        const c = b.dataset.accent;
+        if (c === 'cyan') {
+          document.documentElement.style.setProperty('--accent-cyan', '#00f0ff');
+        } else if (c === 'purple') {
+          document.documentElement.style.setProperty('--accent-cyan', '#b38bff');
+          document.documentElement.style.setProperty('--accent-purple', '#7b5cff');
+        }
+      }));
+
+      // collapse sidebar for small screens
+      collapseBtn.addEventListener('click', ()=>{
+        const sb = document.querySelector('.sidebar');
+        sb.classList.toggle('collapsed');
+        if (sb.classList.contains('collapsed')) {
+          sb.style.transform = 'translateX(-52px)';
+          sb.style.opacity = '0.9';
+        } else {
+          sb.style.transform = '';
+          sb.style.opacity = '';
+        }
+      });
+
+      // Regenerate / clear
+      document.getElementById('regenerate').addEventListener('click', ()=>{
+        // take last user message and regenerate
+        const items = chatInner.querySelectorAll('.msg.user');
+        const last = items[items.length - 1];
+        if (last) {
+          const text = last.firstChild.textContent || last.textContent;
+          showTyping();
+          setTimeout(()=> {
+            removeTyping();
+            addMessage(generateReply(text.trim()), 'bot', 'just now');
+          }, 600 + Math.random()*800);
+        } else {
+          addMessage("Start the conversation by typing a prompt.", 'bot', 'just now');
+        }
+      });
+      document.getElementById('clearChat').addEventListener('click', ()=>{
+        chatInner.innerHTML = '';
+        addMessage("Conversation cleared. I'm ready when you are.", 'bot', 'just now');
+      });
+      document.getElementById('exportChat').addEventListener('click', ()=>{
+        const text = Array.from(chatInner.querySelectorAll('.msg')).map(m => {
+          const who = m.classList.contains('user') ? 'You' : 'OMI';
+          const content = m.childNodes[0].textContent || m.textContent;
+          return who + ': ' + content.trim();
+        }).join('\\n\\n');
+        const blob = new Blob([text], {type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'omverse-conversation.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Preload: keep scroll at bottom
+      setTimeout(()=> {
+        chatInner.parentElement.scrollTop = chatInner.parentElement.scrollHeight;
+      },100);
+
+      // Accessibility: focus composer on load
+      inputBox.focus();
+
+    })();
+  </script>
+</body>
+                    </html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
