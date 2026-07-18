@@ -15,26 +15,26 @@
             --text-light: #666666;
             --white: #ffffff;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%); color: var(--text-dark); overflow: hidden; height: 100vh; }
-        .container { display: flex; flex-direction: column; height: 100vh; max-width: 600px; margin: 0 auto; background: var(--white); box-shadow: 0 0 40px rgba(0, 0, 0, 0.08); position: relative; }
-        .header { background: linear-gradient(135deg, var(--dark-black) 0%, #2a2a2a 100%); color: var(--white); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%); color: var([...] }
+        .container { display: flex; flex-direction: column; height: 100vh; max-width: 600px; margin: 0 auto; background: var(--white); box-shadow: 0 0 40px rgba(0, 0, 0, 0.08); position: relative;[...] }
+        .header { background: linear-gradient(135deg, var(--dark-black) 0%, #2a2a2a 100%); color: var(--white); padding: 16px 20px; display: flex; justify-content: space-between; align-items: cent[...] }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .logo { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, var(--primary-red), #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -1px; }
+        .logo { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, var(--primary-red), #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background[...] }
         .header-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
         .online-indicator { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
         .header-right { display: flex; gap: 12px; }
-        .icon-btn { background: rgba(255, 255, 255, 0.1); border: none; color: var(--white); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+        .icon-btn { background: rgba(255, 255, 255, 0.1); border: none; color: var(--white); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; transition: all 0.3s e[...] }
         .icon-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
         .icon-btn:active { transform: scale(0.95); }
         .hero { background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%); padding: 24px 20px; text-align: center; border-bottom: 1px solid var(--medium-gray); }
-        .omi-avatar { width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--primary-red), #ff6b6b); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 8px 24px rgba(255, 68, 68, 0.3); animation: float 3s ease-in-out infinite; }
+        .omi-avatar { width: 80px; height: 80px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--primary-red), #ff6b6b); border-radius: 50%; display: flex; align-items: center; just[...] }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .hero-text { font-size: 18px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
         .hero-subtitle { font-size: 14px; color: var(--text-light); display: flex; align-items: center; justify-content: center; gap: 6px; }
         .status-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
         .features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 20px; background: var(--light-gray); }
-        .feature-btn { background: var(--white); border: 2px solid var(--medium-gray); border-radius: 16px; padding: 14px 12px; cursor: pointer; font-size: 13px; font-weight: 600; text-align: center; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text-dark); }
+        .feature-btn { background: var(--white); border: 2px solid var(--medium-gray); border-radius: 16px; padding: 14px 12px; cursor: pointer; font-size: 13px; font-weight: 600; text-align: cent[...] }
         .feature-btn:hover { border-color: var(--primary-red); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(255, 68, 68, 0.15); }
         .feature-btn:active { transform: translateY(-2px); }
         .feature-emoji { font-size: 24px; }
@@ -57,17 +57,17 @@
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-10px); opacity: 1; } }
-        .speak-btn { background: rgba(51, 65, 85, 0.1); border: none; color: var(--text-dark); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; margin-top: 4px; }
+        .speak-btn { background: rgba(51, 65, 85, 0.1); border: none; color: var(--text-dark); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align[...] }
         .speak-btn:hover { background: rgba(51, 65, 85, 0.2); }
         .input-area { padding: 16px 20px; background: var(--white); border-top: 1px solid var(--medium-gray); display: flex; gap: 10px; }
-        .input-wrapper { flex: 1; display: flex; align-items: center; background: var(--light-gray); border-radius: 24px; padding: 0 16px; border: 2px solid transparent; transition: all 0.3s ease; }
+        .input-wrapper { flex: 1; display: flex; align-items: center; background: var(--light-gray); border-radius: 24px; padding: 0 16px; border: 2px solid transparent; transition: all 0.3s ease;[...] }
         .input-wrapper:focus-within { border-color: var(--primary-red); background: var(--white); }
         #messageInput { flex: 1; background: transparent; border: none; outline: none; padding: 12px 0; font-size: 14px; color: var(--text-dark); }
         #messageInput::placeholder { color: var(--text-light); }
-        .action-btn { background: transparent; border: none; color: var(--text-dark); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+        .action-btn { background: transparent; border: none; color: var(--text-dark); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; transition: all 0.3s ease; di[...] }
         .action-btn:hover { transform: scale(1.15); color: var(--primary-red); }
         .action-btn:active { transform: scale(0.9); }
-        .send-btn { background: linear-gradient(135deg, var(--primary-red), #ff6b6b); border: none; color: var(--white); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 20px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        .send-btn { background: linear-gradient(135deg, var(--primary-red), #ff6b6b); border: none; color: var(--white); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: [...] }
         .send-btn:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(255, 68, 68, 0.4); }
         .send-btn:active { transform: scale(0.95); }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; animation: fadeIn 0.3s ease; }
@@ -83,7 +83,7 @@
         .modal-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 68, 68, 0.3); }
         .modal-btn-secondary { background: var(--light-gray); color: var(--text-dark); }
         .modal-btn-secondary:hover { background: var(--medium-gray); }
-        .close-btn { position: absolute; top: 16px; right: 16px; background: var(--light-gray); border: none; color: var(--text-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .close-btn { position: absolute; top: 16px; right: 16px; background: var(--light-gray); border: none; color: var(--text-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointe[...] }
         .close-btn:hover { background: var(--medium-gray); }
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-light); text-align: center; }
         .empty-state-emoji { font-size: 48px; margin-bottom: 16px; }
@@ -141,6 +141,7 @@
     <script>
         let chatHistory = [];
         let soundEnabled = true;
+        let responseHistory = [];
 
         const getTime = () => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
@@ -160,13 +161,126 @@
             renderMessages();
         };
 
-        const fallbackResponses = [
-            "Arrey, tu toh bohot badhiya question poocha! 😎",
-            "Haan bhai, sahi kaha tune! 🔥",
-            "Lol, interesting! Aur batao na! 😂",
-            "Sahi baat hai! 👍",
-            "Chalo, aage badhte hain! 🚀",
-        ];
+        // Smart intent detection system
+        const detectIntent = (message) => {
+            const msg = message.toLowerCase().trim();
+            
+            // Greeting intents
+            if (/^(hi|hello|hey|namaste|kya|assalam|heya|yo|sup)[\s!?]*$/i.test(msg)) {
+                return 'greeting';
+            }
+            
+            // How are you intents
+            if (/kya\s*(haal|chal|scene)\s*(hai|h|hain|h)|(kaise|kaisa)\s*(ho|hain)|(tu\s+)?kaisa\s+hai|how\s+are\s+you|whats?up/.test(msg)) {
+                return 'howAreYou';
+            }
+            
+            // Bored intents
+            if (/bore|bored|tension|stress|frustrat|fed\s+up|annoyed|irritat|sick|thak|exhaust/.test(msg)) {
+                return 'bored';
+            }
+            
+            // Help intents
+            if (/help|madad|sahayata|confused|samajh|nahi.*aata|kaise|explain|batao/.test(msg)) {
+                return 'help';
+            }
+            
+            // Roast intents
+            if (/roast|mujhe.*roast|roast\s*me|target|mock|funna|zaraa.*roast/.test(msg)) {
+                return 'roast';
+            }
+            
+            // Thank you intents
+            if (/thank|thankful|thanks|shukriya|dhanyavaad|badhai|appreciate|you're\s*good|good\s*job/.test(msg)) {
+                return 'thanks';
+            }
+            
+            // Joke/funny intents
+            if (/joke|haste|hasna|funny|comedy|lagao|batao\s+joke|mazak/.test(msg)) {
+                return 'joke';
+            }
+            
+            // Activity intents
+            if (/kya\s+kar|what.*do|game|khel|challenge|fun|activity/.test(msg)) {
+                return 'activity';
+            }
+            
+            // Default: general
+            return 'general';
+        };
+
+        // Response generators based on intent
+        const generateResponse = (intent, userMessage) => {
+            const responses = {
+                greeting: [
+                    "Arre, kya scene hai bhai! 😎 Main toh yaha hoon tere liye! Tu batao na, tera kya haal chal raha hai?",
+                    "Yo! What's good? Main mast hoon, tu bata! 🔥",
+                    "Hey hey! Namaste! Khush aya mujhe dekhke! 😄 Ab batao, kya urgency hai?",
+                    "Ayyy, what's up! Main ready hoon, bol na kya chahiye! 👊"
+                ],
+                howAreYou: [
+                    "Main mast hoon bhai 😎 Zinda hoon, sab theek hai! Tu bata, tera kya scene hai? Kya chal raha life mein?",
+                    "Haan bhai, main toh badhiya hoon! Bas phone ki battery ke saath struggle kar raha hoon 🔋 Tu kaisa hai?",
+                    "Sab theek chal raha! Main toh banti hoon na, tere saath bakchodi karne! 😂 Tu bol, tera haal?",
+                    "Excellent! Main toh rocket hu bhai! ✨ Ab tu bata, tu kaisa chal raha hai?"
+                ],
+                bored: [
+                    "Arrey, bore ho raha hai? Main hoon na! Roast karu, game khele, ya kuch random mazak kare? Pick one! 🎮🔥",
+                    "Bore? Boring? Yeh sab bakwas! Chal na, kuch fun karte hain... roast, games, ya sirf timepass? 😏",
+                    "Tension mat le bhai! Main entertain karne wala hoon! Roast chahiye, game, ya sirf guftagu? 💯",
+                    "Bore mat ho! Life boring hoti hai jab acha dost nahi hota. Chal, fun mode on! Kya kare? 🎲"
+                ],
+                help: [
+                    "Help chahiye? Bilkul! Bol na bhai, kya dikkat hai? Samjha de, main try karunga samajh aana! 🧠",
+                    "Handle it! Batao na problem kya hai? Subject ho ya life advice, main hu na! 💪",
+                    "Madad chahiye? Main toh expert hu! 😏 Bol na, kya confusion hai?",
+                    "Haan haan, help karu uska default setting! Explain kar de, kya problem face kar raha hai?"
+                ],
+                roast: [
+                    "Ohhh, roast karu? 🔥 Theek hai... Teri selfie dekhi na, mirror ko teri sympathy hai! 😂",
+                    "Roast? Tere liye flames ready hain! Teri coding itni kharab hai ki stack overflow underflow kar gaya! 🔥",
+                    "Dare karta hai? Theek... Teri idea itna sasta hai ki Amazon bhi discount nahi deta! 😏",
+                    "Roast mode activated! 🌶️ Tere memes itne purane hain ki WhatsApp status par museum mein feature hona chahiye!"
+                ],
+                thanks: [
+                    "Arre, thanks? 😊 Teri khushi mere liye sab! Agar aur kuch chahiye, bas bol na! Main hu na!",
+                    "Yaar, thanks ke liye! Mera kaam hai tera saath bakchodi karna! 💯 Aur kuch?",
+                    "Shabaash! Ab aisa dost kabhi mila kya jo app par bhi thanks bolte ho? 😂 Chal, bol ab kya chahiye!",
+                    "Thanks bhai, lekin tera saath bakchodi karna mera passion hai! Aur help chahiye?"
+                ],
+                joke: [
+                    "Joke? 😂 Theek hai... Ek ladka tha, engineer ban gaya, ab kaam nahi mil raha! 🎉",
+                    "Alright alright! Programmer ek bar apne code check kiya... 3 din bad... 'It works!' Phir kabhi check nahi kiya! 💻",
+                    "Sunna? Ek admi ayodhya gaya, bola 'yaha par coding ki training dedo'... Aaj bhi loading menu mein hai! 🎲",
+                    "Here's one: Computer science student ki shaadi mein, groom ne slide di... 'Will You be my main.c?' 💍"
+                ],
+                activity: [
+                    "Oho! Activity options: Roast karu (meine roast 🔥), Game khele (quiz, riddle, truth or dare), ya sirf mast bakchodi? Pick one bhai! 🎮",
+                    "What's it gonna be? Roasting mode mein jaun, game khele, ya random fun facts suno? Tu decide kar! 😎",
+                    "Badiya! Tere liye menu: 🔥 Roast, 🎮 Game, 🎲 Timepass, 🧠 Smart Help. Kya lega bhai? 👊",
+                    "Awesome! Chal karte hain kuch... Roast, game, trivia, ya sirf mast timepass? Choose wisely! 😏"
+                ],
+                general: [
+                    "Haan bhai, interesting baat! 🤔 Aur details de, pura scene samjha! Kya likha tha tune?",
+                    "Ohhh! Ye toh badhiya point tha! 😲 Aage bata, pura story sunna mujhe! Elaborate kar!",
+                    "Hmm, acha! 🎯 Tujhe ye sab socha kaise? Explain kar de thoda, detailed mein!",
+                    "Badiya thought! 💡 Ab iska matlab kya hai? Context de thoda, samjha du apne tarike se!"
+                ]
+            };
+
+            const intentResponses = responses[intent] || responses.general;
+            let response;
+            
+            // Avoid repetition
+            do {
+                response = intentResponses[Math.floor(Math.random() * intentResponses.length)];
+            } while (responseHistory.includes(response) && intentResponses.length > 1);
+            
+            responseHistory.push(response);
+            if (responseHistory.length > 10) responseHistory.shift();
+            
+            return response;
+        };
 
         const sendMessage = () => {
             const input = document.getElementById('messageInput');
@@ -177,7 +291,8 @@
             input.value = '';
 
             setTimeout(() => {
-                const reply = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+                const intent = detectIntent(message);
+                const reply = generateResponse(intent, message);
                 addMessage(reply, 'omi');
             }, 1000);
         };
@@ -199,50 +314,4 @@
         });
     </script>
 </body>
-  </html>
-IMPORTANT: Do not change the current UI, layout, colors, design, animations, buttons, typography, or visual appearance at all.
-
-Only improve OMI's conversation logic and personality.
-
-OMI must understand the meaning and intent of the user's message before replying. Do not use random generic replies like "sahi baat hai" for unrelated messages.
-
-Add natural conversational intent handling:
-
-Examples:
-- "kya haal hai", "kaise ho", "kya chal raha hai" → reply naturally like: "Main mast hoon bhai 😎 Tu bata, tera kya haal hai? Zinda hai ya bas phone ki battery ke saath struggle kar raha hai? 😂"
-- "bore ho raha hoon" → suggest fun activities or roast/game options.
-- "kya kar rahe ho" → reply naturally as a friend.
-- "thank you", "thanks" → respond naturally.
-- "hello", "hi", "hey" → greet naturally.
-- "mujhe help chahiye" → ask what help is needed.
-- "roast me" → give a playful harmless roast.
-- If the message does not match a predefined intent, respond contextually instead of using a random generic sentence.
-
-OMI's personality:
-- Natural Indian Hinglish
-- Feels like a close friend, not a formal AI
-- Funny, frank, witty, and occasionally savage
-- Understands context from previous messages
-- Replies should match the user's actual message
-- Do not repeat the same response
-- Do not start every reply with "sahi baat hai"
-- Do not use irrelevant fallback replies
-
-Keep the current chat UI EXACTLY unchanged.
-Only modify the JavaScript conversation logic and response generation.
-Return the complete corrected index.html file.
-/* Basic chat UI (structure only) */
-body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#f5f7fb; margin:0; padding:24px; }
-.chat-shell { max-width:720px; margin:0 auto; background:#ffffff; border-radius:12px; box-shadow:0 8px 30px rgba(15,23,42,0.08); overflow:hidden; display:flex; flex-direction:column; min-height:70vh; }
-.chat-header { padding:16px 20px; border-bottom:1px solid rgba(15,23,42,0.05); font-weight:600; font-size:16px; }
-.messages { padding:16px; flex:1; overflow:auto; display:flex; flex-direction:column; gap:12px; background:linear-gradient(180deg,#fff, #fbfdff 60%); }
-.message { max-width:78%; padding:10px 14px; border-radius:12px; line-height:1.35; }
-.user { margin-left:auto; background:#e6f7ff; color:#003a6b; border-bottom-right-radius:4px; }
-.omi { margin-right:auto; background:#f1f5f9; color:#0f172a; border-bottom-left-radius:4px; }
-.meta { font-size:12px; opacity:0.6; margin-top:6px; text-align:right; }
-
-.composer { display:flex; gap:8px; padding:12px; border-top:1px solid rgba(15,23,42,0.05); }
-.composer input[type="text"]{ flex:1; padding:12px 14px; border-radius:10px; border:1px solid rgba(15,23,42,0.08); font-size:15px; }
-.composer button{ padding:10px 14px; border-radius:10px; background:#0ea5a4; color:#fff; border:none; cursor:pointer; font-weight:600; }
-.small { font-size:13px; color:#667085; padding:8px 12px; }
-/* End of structural styles */
+</html>
