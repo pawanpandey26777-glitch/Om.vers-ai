@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMVERSE — OMI AI</title>
+
+<style>
+:root{
+  --bg:#09090d;
+  --panel:#111118;
+  --panel2:#171720;
+  --red:#ff4d5a;
+  --purple:#8b5cf6;
+  --text:#f7f7fb;
+  --muted:#9b9ba8;
+  --border:rgba(255,255,255,.09);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:
+    radial-gradient(circle at top right,rgba(139,92,246,.15),transparent 35%),
+    radial-gradient(circle at bottom left,rgba(255,77,90,.10),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.app{
+  width:100%;
+  max-width:620px;
+  height:100vh;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+/* HEADER */
+
+.header{
+  height:72px;
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:rgba(9,9,13,.88);
+  backdrop-filter:blur(20px);
+  z-index:5;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.logo{
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,var(--red),var(--purple));
+  font-size:18px;
+  font-weight:900;
+  box-shadow:0 0 25px rgba(139,92,246,.35);
+}
+
+.brand h1{
+  font-size:18px;
+  letter-spacing:1px;
+}
+
+.status{
+  font-size:11px;
+  color:#65e6a2;
+  margin-top:3px;
+}
+
+.status span{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  background:#65e6a2;
+  border-radius:50%;
+  margin-right:5px;
+  box-shadow:0 0 10px #65e6a2;
+}
+
+.header-actions{
+  display:flex;
+  gap:8px;
+}
+
+.icon-btn{
+  width:42px;
+  height:42px;
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:white;
+  border-radius:14px;
+  font-size:19px;
+  cursor:pointer;
+}
+
+.icon-btn:active{
+  transform:scale(.94);
+}
+
+/* CHAT */
+
+.chat{
+  flex:1;
+  overflow-y:auto;
+  padding:22px 16px 135px;
+  scroll-behavior:smooth;
+}
+
+.chat::-webkit-scrollbar{
+  width:4px;
+}
+
+.chat::-webkit-scrollbar-thumb{
+  background:#30303b;
+  border-radius:10px;
+}
+
+.welcome{
+  text-align:center;
+  padding:22px 10px 25px;
+}
+
+.robot{
+  font-size:64px;
+  animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+
+.welcome h2{
+  font-size:25px;
+  margin-top:10px;
+}
+
+.welcome p{
+  color:var(--muted);
+  margin-top:8px;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.message{
+  display:flex;
+  margin:14px 0;
+  animation:appear .25s ease;
+}
+
+@keyframes appear{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.message.user{
+  justify-content:flex-end;
+}
+
+.bubble{
+  max-width:84%;
+  padding:13px 15px;
+  border-radius:18px;
+  line-height:1.5;
+  font-size:15px;
+  white-space:pre-wrap;
+  word-wrap:break-word;
+}
+
+.message.omi .bubble{
+  background:linear-gradient(135deg,#21183b,#171126);
+  border:1px solid rgba(139,92,246,.32);
+  border-bottom-left-radius:5px;
+}
+
+.message.user .bubble{
+  background:linear-gradient(135deg,#bd3446,#8e2637);
+  border-bottom-right-radius:5px;
+}
+
+.message-label{
+  font-size:10px;
+  color:var(--muted);
+  margin:5px 5px 0;
+}
+
+.message.user .message-label{
+  text-align:right;
+}
+
+.typing{
+  display:flex;
+  gap:4px;
+  padding:15px 17px;
+  width:max-content;
+  border-radius:18px;
+  background:#21183b;
+  border:1px solid rgba(139,92,246,.3);
+}
+
+.typing i{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#b9a0ff;
+  animation:bounce 1s infinite;
+}
+
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.5}
+  50%{transform:translateY(-5px);opacity:1}
+}
+
+/* QUICK BUTTONS */
+
+.quick{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:8px 0 13px;
+}
+
+.quick::-webkit-scrollbar{
+  display:none;
+}
+
+.quick button{
+  white-space:nowrap;
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:#eee;
+  padding:10px 13px;
+  border-radius:13px;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.quick button:hover{
+  border-color:var(--red);
+}
+
+/* COMPOSER */
+
+.composer-wrap{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:10px 14px 15px;
+  background:linear-gradient(transparent,var(--bg) 28%);
+  z-index:4;
+}
+
+.composer{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  padding:8px;
+  background:rgba(20,20,29,.96);
+  border:1px solid var(--border);
+  border-radius:21px;
+  box-shadow:0 12px 40px rgba(0,0,0,.45);
+}
+
+.input{
+  flex:1;
+  min-height:42px;
+  max-height:110px;
+  resize:none;
+  border:none;
+  outline:none;
+  background:transparent;
+  color:white;
+  padding:11px 7px;
+  font-size:15px;
+  font-family:inherit;
+}
+
+.input::placeholder{
+  color:#777786;
+}
+
+.send,.mic{
+  width:43px;
+  height:43px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:18px;
+  flex-shrink:0;
+}
+
+.mic{
+  background:#252532;
+  color:white;
+}
+
+.mic.active{
+  background:var(--red);
+  animation:pulse 1s infinite;
+}
+
+.send{
+  background:linear-gradient(135deg,var(--red),var(--purple));
+  color:white;
+}
+
+@keyframes pulse{
+  50%{box-shadow:0 0 0 8px rgba(255,77,90,.15)}
+}
+
+/* MODAL */
+
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:20;
+}
+
+.modal-bg.show{
+  display:flex;
+}
+
+.modal{
+  width:100%;
+  max-width:620px;
+  background:#15151e;
+  border:1px solid var(--border);
+  border-radius:25px 25px 0 0;
+  padding:22px;
+}
+
+.modal h3{
+  font-size:20px;
+  margin-bottom:15px;
+}
+
+.modal p{
+  color:var(--muted);
+  line-height:1.6;
+  font-size:14px;
+}
+
+.close{
+  float:right;
+  background:none;
+  border:none;
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+  <div class="brand">
+    <div class="logo">OM</div>
+    <div>
+      <h1>OMVERSE</h1>
+      <div class="status">
+        <span></span> OMI is online
+      </div>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <button class="icon-btn" id="voiceToggle" title="Voice">🔊</button>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
+  </div>
+</header>
+
+<main class="chat" id="chat">
+
+  <section class="welcome">
+    <div class="robot">🤖</div>
+    <h2>Oye bhai, aa gaya tu 😎</h2>
+    <p>
+      Main OMI hoon — tera AI dost, thoda savage,
+      thoda smart aur kabhi-kabhi unnecessarily funny.
+    </p>
+  </section>
+
+  <div class="message omi">
+    <div>
+      <div class="bubble">
+Oye bhai 😎 Swagat hai OMVERSE mein!
+
+Bata, normal baat karni hai, smart help chahiye ya OMI se roast karwana hai? 🔥
+      </div>
+      <div class="message-label">
