@@ -13,174 +13,140 @@
 }
 
 :root{
-  --bg:#09090d;
-  --card:#15151d;
-  --card2:#1d1d27;
-  --red:#ff4657;
-  --purple:#8b5cf6;
-  --white:#ffffff;
-  --muted:#a7a7b4;
-  --border:rgba(255,255,255,.1);
-}
-
-html,
-body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:var(--bg);
-  color:var(--white);
-  font-family:Arial,Helvetica,sans-serif;
+  --red:#ff4d5a;
+  --pink:#ff4f87;
+  --purple:#8d5cff;
+  --bg:#08070d;
+  --card:#15121f;
+  --text:#ffffff;
+  --muted:#aaa5b5;
 }
 
 body{
+  min-height:100vh;
   background:
-  radial-gradient(circle at 100% 0%,rgba(139,92,246,.2),transparent 35%),
-  radial-gradient(circle at 0% 100%,rgba(255,70,87,.12),transparent 35%),
-  var(--bg);
+    radial-gradient(circle at 20% 20%,#21113d 0%,transparent 35%),
+    radial-gradient(circle at 90% 80%,#301016 0%,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  overflow:hidden;
 }
 
+/* APP */
 .app{
-  width:100%;
+  height:100vh;
   max-width:650px;
-  height:100dvh;
   margin:auto;
   display:flex;
   flex-direction:column;
-  overflow:hidden;
 }
 
 /* HEADER */
-
 .header{
-  flex:0 0 72px;
+  height:82px;
+  padding:14px 18px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:12px 16px;
-  background:rgba(9,9,13,.94);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(20px);
-  z-index:10;
+  border-bottom:1px solid #282431;
+  background:rgba(8,7,13,.88);
+  backdrop-filter:blur(15px);
 }
 
 .brand{
   display:flex;
   align-items:center;
-  gap:11px;
+  gap:12px;
 }
 
 .logo{
-  width:44px;
-  height:44px;
-  border-radius:14px;
+  width:54px;
+  height:54px;
+  border-radius:18px;
   display:flex;
   justify-content:center;
   align-items:center;
+  font-size:23px;
   font-weight:900;
-  font-size:17px;
-  background:linear-gradient(135deg,var(--red),var(--purple));
-  box-shadow:0 0 25px rgba(139,92,246,.35);
+  background:linear-gradient(135deg,#ff4d70,#8c4dff);
+  box-shadow:0 0 25px #9b3fff55;
 }
 
-.brand-title{
-  font-weight:800;
+.brand h1{
+  font-size:22px;
   letter-spacing:1px;
-  font-size:18px;
 }
 
-.online{
-  margin-top:3px;
-  color:#65e6a2;
-  font-size:11px;
+.status{
+  color:#52e29b;
+  font-size:14px;
+  margin-top:4px;
 }
 
-.online-dot{
-  display:inline-block;
-  width:7px;
-  height:7px;
-  margin-right:5px;
-  border-radius:50%;
-  background:#65e6a2;
-  box-shadow:0 0 9px #65e6a2;
-}
-
-.actions{
+.header-buttons{
   display:flex;
-  gap:8px;
+  gap:10px;
 }
 
-.icon{
-  width:42px;
-  height:42px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:var(--card2);
+.icon-btn{
+  width:48px;
+  height:48px;
+  border:none;
+  border-radius:50%;
+  background:#1b1922;
   color:white;
-  font-size:18px;
+  font-size:21px;
   cursor:pointer;
+  transition:.2s;
 }
 
-/* CHAT AREA */
+.icon-btn:hover{
+  transform:scale(1.08);
+  background:#292432;
+}
 
+/* CHAT */
 .chat{
-  flex:1 1 auto;
-  min-height:0;
+  flex:1;
   overflow-y:auto;
-  padding:20px 15px 15px;
+  padding:20px 16px 145px;
   scroll-behavior:smooth;
-}
-
-.chat::-webkit-scrollbar{
-  width:4px;
-}
-
-.chat::-webkit-scrollbar-thumb{
-  background:#343440;
-  border-radius:20px;
 }
 
 .welcome{
   text-align:center;
-  padding:15px 10px 25px;
+  padding:28px 10px 24px;
 }
 
 .robot{
-  font-size:64px;
-  animation:float 3s ease-in-out infinite;
-}
-
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
+  font-size:75px;
+  margin-bottom:12px;
+  filter:drop-shadow(0 0 20px #884dff88);
 }
 
 .welcome h2{
-  font-size:24px;
-  margin-top:10px;
+  font-size:27px;
+  margin-bottom:10px;
 }
 
 .welcome p{
-  margin:8px auto 0;
-  max-width:420px;
   color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
+  line-height:1.6;
+  font-size:15px;
 }
 
 /* MESSAGES */
-
 .message{
   display:flex;
-  width:100%;
-  margin:15px 0;
-  animation:show .25s ease;
+  margin:16px 0;
+  animation:appear .25s ease;
 }
 
-@keyframes show{
+@keyframes appear{
   from{
     opacity:0;
-    transform:translateY(8px);
+    transform:translateY(10px);
   }
   to{
     opacity:1;
@@ -192,128 +158,409 @@ body{
   justify-content:flex-end;
 }
 
-.message-content{
-  max-width:84%;
-}
-
 .bubble{
-  padding:13px 15px;
-  border-radius:18px;
-  font-size:15px;
+  max-width:82%;
+  padding:14px 17px;
+  border-radius:20px;
   line-height:1.5;
+  font-size:16px;
   white-space:pre-wrap;
-  word-break:break-word;
 }
 
-.message.omi .bubble{
-  background:linear-gradient(135deg,#24183f,#171322);
-  border:1px solid rgba(139,92,246,.35);
+.ai .bubble{
+  background:linear-gradient(135deg,#1b1530,#24163d);
+  border:1px solid #6841a877;
   border-bottom-left-radius:5px;
+  box-shadow:0 5px 25px #00000035;
 }
 
-.message.user .bubble{
-  background:linear-gradient(135deg,#c93749,#8c2737);
+.user .bubble{
+  background:linear-gradient(135deg,#ff4058,#b52c72);
   border-bottom-right-radius:5px;
+  box-shadow:0 5px 20px #ff365833;
 }
 
-.label{
-  margin:5px 6px 0;
-  font-size:10px;
-  color:var(--muted);
-}
-
-.message.user .label{
-  text-align:right;
-}
-
-/* TYPING */
-
-.typing{
-  display:flex;
-  gap:5px;
-  width:max-content;
-  padding:15px 17px;
-  border-radius:18px;
-  border-bottom-left-radius:5px;
-  background:#24183f;
-  border:1px solid rgba(139,92,246,.35);
-}
-
-.typing span{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#c2aeff;
-  animation:typing 1s infinite;
-}
-
-.typing span:nth-child(2){
-  animation-delay:.15s;
-}
-
-.typing span:nth-child(3){
-  animation-delay:.3s;
-}
-
-@keyframes typing{
-  0%,100%{
-    opacity:.4;
-    transform:translateY(0);
-  }
-  50%{
-    opacity:1;
-    transform:translateY(-5px);
-  }
-}
-
-/* BOTTOM AREA */
-
-.bottom{
-  flex:0 0 auto;
-  padding:8px 13px 14px;
-  background:linear-gradient(
-    transparent,
-    rgba(9,9,13,.98) 20%
-  );
-}
-
-/* QUICK ACTIONS */
-
+/* QUICK BUTTONS */
 .quick{
   display:flex;
   gap:8px;
   overflow-x:auto;
-  padding:5px 0 10px;
-}
-
-.quick::-webkit-scrollbar{
-  display:none;
+  padding:8px 0 14px;
 }
 
 .quick button{
-  flex:0 0 auto;
-  border:1px solid var(--border);
-  border-radius:13px;
-  background:var(--card2);
-  color:white;
-  padding:9px 12px;
-  font-size:12px;
+  white-space:nowrap;
+  border:1px solid #514066;
+  background:#171321;
+  color:#ddd;
+  border-radius:20px;
+  padding:10px 14px;
   cursor:pointer;
 }
 
-.quick button:active{
-  transform:scale(.95);
+.quick button:hover{
+  border-color:var(--pink);
 }
 
-/* MESSAGE BOX */
-
-.composer{
+/* INPUT AREA */
+.input-area{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
   width:100%;
-  min-height:58px;
+  max-width:650px;
+  padding:12px 14px 18px;
+  background:linear-gradient(transparent,#08070d 25%);
+}
+
+.input-box{
   display:flex;
   align-items:flex-end;
-  gap:7px;
-  padding:7px;
-  border-radius:20px;
-  background:#171720;
-  border:1px solid rgba(255,255,255,.13
+  gap:8px;
+  padding:9px;
+  border:1px solid #3a3347;
+  background:#15121e;
+  border-radius:25px;
+  box-shadow:0 0 25px #00000066;
+}
+
+#messageInput{
+  flex:1;
+  resize:none;
+  min-height:42px;
+  max-height:120px;
+  padding:11px 10px;
+  border:none;
+  outline:none;
+  color:white;
+  background:transparent;
+  font-size:16px;
+  font-family:inherit;
+}
+
+#messageInput::placeholder{
+  color:#898392;
+}
+
+.send-btn,
+.mic-btn{
+  width:45px;
+  height:45px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  color:white;
+  font-size:19px;
+  flex-shrink:0;
+}
+
+.send-btn{
+  background:linear-gradient(135deg,#ff4058,#8e45ff);
+}
+
+.mic-btn{
+  background:#292332;
+}
+
+.send-btn:active,
+.mic-btn:active{
+  transform:scale(.9);
+}
+
+/* TYPING */
+.typing{
+  display:none;
+  color:#aaa;
+  font-size:14px;
+  margin:10px 4px;
+}
+
+.typing span{
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.2}
+}
+
+/* MOBILE */
+@media(max-width:500px){
+  .brand h1{
+    font-size:19px;
+  }
+
+  .logo{
+    width:48px;
+    height:48px;
+  }
+
+  .welcome h2{
+    font-size:24px;
+  }
+
+  .bubble{
+    max-width:88%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">OM</div>
+      <div>
+        <h1>OMVERSE</h1>
+        <div class="status">● OMI is online</div>
+      </div>
+    </div>
+
+    <div class="header-buttons">
+      <button class="icon-btn" onclick="toggleVoice()" id="voiceToggle">🔊</button>
+      <button class="icon-btn" onclick="showSettings()">⚙️</button>
+    </div>
+  </header>
+
+  <!-- CHAT -->
+  <main class="chat" id="chat">
+
+    <section class="welcome">
+      <div class="robot">🤖</div>
+      <h2>Oye bhai, aa gaya tu 😎</h2>
+      <p>
+        Main OMI hoon — tera AI dost, thoda savage,
+        thoda smart aur kabhi-kabhi unnecessarily funny.
+      </p>
+    </section>
+
+    <div class="message ai">
+      <div class="bubble">
+Oye bhai 😎 Swagat hai OMVERSE mein!
+
+Bata, normal baat karni hai, smart help chahiye ya OMI se roast karwana hai? 🔥
+      </div>
+    </div>
+
+    <div class="quick">
+      <button onclick="quickMessage('Mujhe roast karo 🔥')">🔥 Roast Me</button>
+      <button onclick="quickMessage('Mujhe smart help chahiye 🧠')">🧠 Smart Help</button>
+      <button onclick="quickMessage('Mere saath game khelo 🎮')">🎮 Game</button>
+      <button onclick="quickMessage('Mujhe motivate karo 💪')">💪 Motivation</button>
+    </div>
+
+    <div class="typing" id="typing">
+      OMI is typing<span>...</span>
+    </div>
+
+  </main>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="input-box">
+
+      <button class="mic-btn" onclick="startVoice()" title="Voice">
+        🎙️
+      </button>
+
+      <textarea
+        id="messageInput"
+        placeholder="OMI ko kuch bol bhai..."
+        rows="1"
+        onkeydown="handleKey(event)"
+      ></textarea>
+
+      <button class="send-btn" onclick="sendMessage()">
+        ➤
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+let voiceEnabled = true;
+let selectedMode = "normal";
+
+const input = document.getElementById("messageInput");
+const chat = document.getElementById("chat");
+const typing = document.getElementById("typing");
+
+function addMessage(text,type){
+
+  const message = document.createElement("div");
+  message.className = "message " + type;
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+
+  message.appendChild(bubble);
+  chat.insertBefore(message,typing);
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMessage(){
+
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  addMessage(text,"user");
+
+  input.value = "";
+  input.style.height = "42px";
+
+  typing.style.display = "block";
+  chat.scrollTop = chat.scrollHeight;
+
+  setTimeout(()=>{
+    typing.style.display = "none";
+
+    const reply = generateReply(text);
+
+    addMessage(reply,"ai");
+
+    if(voiceEnabled){
+      speak(reply);
+    }
+
+  },700);
+}
+
+function quickMessage(text){
+  input.value = text;
+  sendMessage();
+}
+
+function handleKey(event){
+
+  if(event.key === "Enter" && !event.shiftKey){
+    event.preventDefault();
+    sendMessage();
+  }
+}
+
+input.addEventListener("input",function(){
+
+  this.style.height = "42px";
+  this.style.height = this.scrollHeight + "px";
+
+});
+
+function generateReply(text){
+
+  const msg = text.toLowerCase();
+
+  if(msg.includes("roast")){
+    return "Bhai tera confidence dekh ke lagta hai WiFi signal bhi tujhe dekh ke strong ho jata hai 😂🔥";
+  }
+
+  if(msg.includes("haal") || msg.includes("kaise ho") || msg.includes("kya haal")){
+    return "Main ekdum mast bhai 😎 Tu bata, life chal rahi hai ya life tujhe chala rahi hai? 😂";
+  }
+
+  if(msg.includes("hello") || msg.includes("hi") || msg.includes("hii")){
+    return "Oye bhai 😎 Kya scene hai? OMI online hai, bol kya bakchodi karni hai?";
+  }
+
+  if(msg.includes("sad") || msg.includes("dukhi")){
+    return "Bhai tension mat le. Problem badi ho sakti hai, par tu akela nahi hai. Bata kya hua?";
+  }
+
+  if(msg.includes("motivate") || msg.includes("motivation")){
+    return "Bhai motivation ka wait mat kar. Pehle action le, motivation raste mein mil jayegi 💪🔥";
+  }
+
+  if(msg.includes("game")){
+    return "Chal game khelte hain 🎮 Main tujhe ek challenge deta hoon: 5 second mein apne baare mein ek funny fact bol 😂";
+  }
+
+  if(msg.includes("help")){
+    return "Bol bhai, kis cheez mein help chahiye? Study, coding, life, ideas ya koi aur lafda? 😎";
+  }
+
+  return "Hmmm... interesting bhai 👀 Ispe thoda sochna padega. Tu thoda aur detail mein bata, OMI full attention se sun raha hai 😎";
+}
+
+/* VOICE OUTPUT */
+function speak(text){
+
+  if(!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "hi-IN";
+  speech.rate = 1.05;
+  speech.pitch = 1;
+
+  window.speechSynthesis.speak(speech);
+}
+
+function toggleVoice(){
+
+  voiceEnabled = !voiceEnabled;
+
+  document.getElementById("voiceToggle").textContent =
+    voiceEnabled ? "🔊" : "🔇";
+}
+
+/* VOICE INPUT */
+function startVoice(){
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+
+    alert("Bhai, is browser mein voice recognition support nahi hai 😭");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = "hi-IN";
+  recognition.interimResults = false;
+
+  recognition.start();
+
+  recognition.onresult = function(event){
+
+    const result = event.results[0][0].transcript;
+
+    input.value = result;
+    sendMessage();
+
+  };
+
+  recognition.onerror = function(){
+
+    alert("Voice input start nahi ho paya. Mic permission check kar bhai 🎙️");
+  };
+}
+
+function showSettings(){
+
+  alert(
+`OMVERSE SETTINGS
+
+🔊 Voice: ${voiceEnabled ? "ON" : "OFF"}
+
+OMI is ready to roast you 😎🔥`
+  );
+
+}
+
+</script>
+
+</body>
+  </html>
