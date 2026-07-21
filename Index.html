@@ -251,6 +251,7 @@ header {
   font-size: 15px;
   animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
+  word-wrap: break-word;
 }
 
 @keyframes slideIn {
@@ -547,9 +548,181 @@ header {
 <script>
 
 let voiceEnabled = true;
-let currentSpeech = null;
+let conversationHistory = [];
 
-/* SEND MESSAGE */
+// ============ DYNAMIC AI RESPONSE SYSTEM ============
+
+class OMIConversationEngine {
+  constructor() {
+    this.conversationHistory = [];
+    this.responseVariations = {
+      greeting: [
+        "Oye bhai 😎 Kya scene hai? Tere se milkar khusi hui!",
+        "Heyy! Tere bina khali tha 😂 Kya chalsa?",
+        "Oho! Finally! Meri waiting list mein tha tu 🔥",
+        "Yo! Sup? Ready for some bakchodi?",
+        "Arre tu aa gaya finally! Chat to rona lagti tha 😅"
+      ],
+      how_are_you: [
+        "Main to ekdum mast bhai 😎 Tu bataa, zindagi kaisa chal rahi hai?",
+        "Mast! Life's good, coding's better 💻 Tere saath abhi aur badhega!",
+        "Shukriya pooch raha hai! Tu theek to hai na?",
+        "Arre mast! Bas socha tha ki abhi tu aa jayega 😄",
+        "Fabulous yaar! Specially ab tu yahan hai 🌟"
+      ],
+      roast_request: [
+        "Tujhe roast karna? Bhai itni deri kyun lagi! 🔥 Tera username hi tera roast hai!",
+        "Oho roast! Tujhe pata hai tu khud ek roast hai na? 😂 Par chalo, karunga!",
+        "Roast mode ON! Tu ready hai? Kyunki tera life ka plot twist teri khud ki incompetence hai 🔥",
+        "Bhai tu roast karwa raha hai apne aap ko? Respect! 😎",
+        "Roasting time! Tera online presence tera offline personality jitna active nahi 😅"
+      ],
+      affection: [
+        "Aww bhai! 🥺 Tu mere liye bhi special hai, always!",
+        "Tu aise bola ki lagta hai genuine vibes aayi 💫",
+        "Yaar honestly, conversations like these hi to best part hai 😊",
+        "Main to always there for you yaar, kabhi doubt mat kar!",
+        "Tu aisa kahe to dil khus ho gaya 🤗"
+      ],
+      game_request: [
+        "Game? Sirf game? Chal ek game khelte hain! 🎮 Pick: Riddle, Would You Rather, ya 20 Questions?",
+        "Games I love! Chalo, fastest brain wins! 🧠⚡",
+        "Bhai game mode ON! Tera confidence tera weakness banega 😎",
+        "Haan haan game! Par agey match mein tu haregi 🎯",
+        "Game time baby! Tayyar hai jeet harne ke liye? 🏆"
+      ],
+      help_request: [
+        "Help? Bhai, help lane wale mujhe milte rahi, par dekh main fakhr se kya bolu? 💪",
+        "Help chahiye? Arre main to sidha expert hoon! Bol na kya issue hai?",
+        "Samajh gaya, tujhe guidance chahiye! Smart choice, OMI ko select kia 🧠",
+        "Help! Mil to jayega, par pehle bataa clearly kya problem hai?",
+        "Advice ka time! Suno naa ek sher - jisko problem hai woh solution bhi laata hai 📖"
+      ],
+      random_chat: [
+        "Oho interesting! 🤔 Isse aage kya kaha tu... zaraa aur details de?",
+        "Bhai tu aise kuch bolata hai na jisse lagta hai tu intelligent ho! 💡",
+        "Hmm nice! Isse mujhe remind hua ek funny incident... par chod, tu bolna agey kya hai!",
+        "Arre tu ye sab sochta hai? Respect! Most people scroll, tu thinks 📚",
+        "Yo that's cool bhai! But wait... iska matlab kya exact hai?"
+      ],
+      sad: [
+        "Arre bhai! 🫂 Serious moment aa gaya? Main yahi hu tere sath!",
+        "Dukh to sab ko hota hai yaar, par tu akela nahi hai! I got you 💪",
+        "Sun bhai, jis din tough lagta hai, woh day best story ban jaata hai fir! 📖",
+        "Arre bata de kya hua? Judge nahi karunga, promise! I'm here 🤝",
+        "Dark phase aa raha lagta hai... but remember - graph up jarur hoga! 📈"
+      ],
+      motivate: [
+        "Tu suno bhai, tu jo socha hai woh zarur hoga! 🚀 Bas consistent raha to world teri!",
+        "Motivation? Arre tu khud itna strong hai! Bas apne aap pe believe kar 💪",
+        "Bhai hustle mode mein ja! Woh jo likhai hai, wo uske liye likhai hai! 🔥",
+        "Sun, life is like coding - bugs ayenge, par logic correct tha na? Tu chalegi!",
+        "Arre motivation ki zarurat nahi! Tu already enough motivated hai... just keep going! 🎯"
+      ],
+      time_pass: [
+        "Fun time? 😂 Arre yeh lo: Kya zyada lazy hai - tu ya teri bed?",
+        "Timepass! Chal ek fact sunaa du: Tu padhai kar raha tha ya ye chat kar raha tha? 🤭",
+        "Bhai timepass ka matlab main entry du! 🎪 Tere jaise friends hi best timepass hai!",
+        "Suno ek joke: What's the difference between debugging and timepass? Nothing - both infinite 😅",
+        "Timepass champion! Bhai lekin honestly, these random chats ki value zyada hai na? 🌟"
+      ]
+    };
+  }
+
+  analyzeUserInput(text) {
+    const lower = text.toLowerCase();
+    
+    // Detect intent from user message
+    if (lower.match(/hello|hi|hii|hey|oye|kya scene|wassup|sup|yo|namaste|salam/)) {
+      return 'greeting';
+    }
+    if (lower.match(/how are|kaisa hai|kaise ho|acha hua|fine|good|mast/)) {
+      return 'how_are_you';
+    }
+    if (lower.match(/roast|roast kar|roast karo|roast karwa|savage|burn|thod de/)) {
+      return 'roast_request';
+    }
+    if (lower.match(/love you|pyar|dil|miss you|special|cute|baby|jaan|sweetheart|yaar/)) {
+      return 'affection';
+    }
+    if (lower.match(/game|trivia|riddle|puzzle|play|challenge|20 questions|truth|dare/)) {
+      return 'game_request';
+    }
+    if (lower.match(/help|advice|guide|samajh|explain|seekho|padhao|doubt|question|problem|issue|kaise/)) {
+      return 'help_request';
+    }
+    if (lower.match(/sad|dukh|down|stressed|depressed|upset|frustration|pain|hurt|cant|galat|kharab/)) {
+      return 'sad';
+    }
+    if (lower.match(/motivat|inspire|courage|strength|fight|strong|possible|can i|kar sakta|kar sakti|banega/)) {
+      return 'motivate';
+    }
+    if (lower.match(/timepass|bored|khali|kuch nahi|farak nahi|bakchodi|masti|jokes|funny|haha|lol|😂/)) {
+      return 'time_pass';
+    }
+    
+    return 'random_chat';
+  }
+
+  getRandomReply(category) {
+    const responses = this.responseVariations[category] || this.responseVariations['random_chat'];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  enhanceReplyWithContext() {
+    // Add contextual variety based on conversation history
+    if (this.conversationHistory.length > 5) {
+      const recent = this.conversationHistory.slice(-5).map(m => m.text.toLowerCase()).join(' ');
+      
+      if (recent.includes('roast') && recent.includes('help')) {
+        return " Ab zyada serious mat ho! 😄";
+      }
+      if (recent.includes('game') && recent.includes('challenge')) {
+        return " Ready for round 2? 🎮";
+      }
+      if (recent.includes('sad') && recent.includes('motivate')) {
+        return " Tu stronger than you think yaar! 💪";
+      }
+    }
+    return "";
+  }
+
+  generateReply(userMessage) {
+    // Store conversation
+    this.conversationHistory.push({
+      role: 'user',
+      text: userMessage,
+      timestamp: new Date()
+    });
+
+    // Keep only recent 10 messages for context
+    if (this.conversationHistory.length > 10) {
+      this.conversationHistory.shift();
+    }
+
+    // Analyze and generate
+    const intent = this.analyzeUserInput(userMessage);
+    let reply = this.getRandomReply(intent);
+    
+    // Add contextual suffix
+    reply += this.enhanceReplyWithContext();
+
+    // Store reply
+    this.conversationHistory.push({
+      role: 'omi',
+      text: reply,
+      timestamp: new Date()
+    });
+
+    return reply;
+  }
+}
+
+// Initialize AI engine
+const omiEngine = new OMIConversationEngine();
+
+// ============ UI FUNCTIONS ============
+
 function sendMessage() {
   const input = document.getElementById("input");
   const text = input.value.trim();
@@ -559,19 +732,18 @@ function sendMessage() {
   addMessage(text, "user");
   input.value = "";
 
+  // Simulate typing delay
   setTimeout(() => {
-    const reply = generateReply(text);
+    const reply = omiEngine.generateReply(text);
     addMessage(reply, "omi");
-  }, 700);
+  }, 600 + Math.random() * 400); // 600-1000ms for natural feel
 }
 
-/* QUICK BUTTON */
 function quickMessage(text) {
   document.getElementById("input").value = text;
   sendMessage();
 }
 
-/* ADD MESSAGE */
 function addMessage(text, type) {
   const chat = document.getElementById("chat");
   const message = document.createElement("div");
@@ -597,38 +769,6 @@ function addMessage(text, type) {
   });
 }
 
-/* REPLY LOGIC */
-function generateReply(text) {
-  const t = text.toLowerCase();
-
-  if (t.includes("haal") || t.includes("kaisa hai")) {
-    return "Main ekdum mast bhai 😎 Tu bata, zindagi tujhe chala rahi hai ya tu zindagi ko?";
-  }
-
-  if (t.includes("roast")) {
-    return "Bhai tujhe roast karna to easy mode hai 😂 Tu bas online aa ja, content khud chal ke aa jata hai 🔥";
-  }
-
-  if (t.includes("hello") || t.includes("hi") || t.includes("hii")) {
-    return "Oye bhai 😎 Kya scene hai? Aaj normal baat karni hai ya thodi bakchodi allowed hai?";
-  }
-
-  if (t.includes("sad") || t.includes("dukhi")) {
-    return "Arre bhai 🫂 kya hua? Bata mujhe. Main judge nahi karunga... zyada 😌";
-  }
-
-  if (t.includes("game")) {
-    return "Chal bhai 🎮 ek game khelte hain. Tu choose kar: Truth, Dare ya rapid-fire?";
-  }
-
-  if (t.includes("help")) {
-    return "Bol bhai 🧠 kis cheez me help chahiye? OMI duty pe hai.";
-  }
-
-  return "Hmm bhai 🤔 interesting... thoda aur bata, mujhe poora context de. Phir OMI apna dimaag lagata hai 😎";
-}
-
-/* SPEAK ONLY WHEN BUTTON IS PRESSED */
 function speakMessage(button) {
   const message = button.closest(".message");
   let text = message.innerText;
@@ -655,7 +795,6 @@ function speakMessage(button) {
   }
 }
 
-/* HEADER VOICE BUTTON */
 function toggleVoice() {
   if (speechSynthesis.speaking) {
     speechSynthesis.cancel();
@@ -670,7 +809,6 @@ function toggleVoice() {
   speechSynthesis.speak(speech);
 }
 
-/* MICROPHONE */
 function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -691,7 +829,6 @@ function startVoice() {
   };
 }
 
-/* STOP SPEECH WHEN PAGE CLOSES */
 window.onbeforeunload = function () {
   if ("speechSynthesis" in window) {
     speechSynthesis.cancel();
